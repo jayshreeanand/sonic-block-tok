@@ -3,6 +3,7 @@
 // No imports needed for the mock implementation
 
 // Mock response for development
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const mockVideoGeneration = (_prompt: string) => {
   // Simulate API processing time
   return new Promise<{ videoUrl: string; thumbnailUrl: string }>((resolve) => {
@@ -31,6 +32,7 @@ export async function generateVideoFromText(prompt: string) {
 }
 
 // Function to get video generation status
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function getVideoGenerationStatus(_id: string) {
   // In a real implementation, you would check the status of the job
   // For now, we'll just return a mock status

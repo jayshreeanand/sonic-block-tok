@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -275,11 +276,12 @@ export default function CreatePage() {
                 <CardContent className="p-4">
                   <h3 className="font-bold mb-4">Generated Video Info</h3>
                   
-                  <div className="rounded-lg overflow-hidden mb-4 aspect-video">
-                    <img 
-                      src={generatedThumbnailUrl || ''} 
+                  <div className="rounded-lg overflow-hidden mb-4 aspect-video relative w-full h-[150px]">
+                    <Image 
+                      src={generatedThumbnailUrl || '/thumbnails/placeholder.jpg'} 
                       alt="Generated video thumbnail" 
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </div>
                   
