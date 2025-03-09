@@ -5,6 +5,9 @@ BlockTok AI is an AI-powered short-form video generation platform on the Injecti
 ## 🚀 Features
 
 - **AI Video Generation**: Create AI-generated short-form videos with customizable options
+  - **Text-to-Video**: Generate videos from text descriptions
+  - **Style Presets**: Apply different artistic styles to generated videos
+  - **Video Templates**: Use pre-made templates for quick creation
 - **Token Rewards**: Earn BTOK tokens for watching, sharing, and interacting with content
 - **NFT Marketplace**: Mint videos as NFTs on the Injective blockchain
 - **Creator Economy**: Monetize content through various revenue streams
@@ -16,6 +19,8 @@ BlockTok AI is an AI-powered short-form video generation platform on the Injecti
 - **Frontend**: Next.js, React, TypeScript, TailwindCSS
 - **Blockchain**: Injective Protocol, Injective SDK
 - **AI**: Integration with AI video generation models
+  - HuggingFace Text-to-Video API (using damo-vilab/text-to-video-ms model)
+  - Support for custom style presets and video templates
 - **Authentication**: Wallet authentication
 
 ## 🏗️ Project Structure
