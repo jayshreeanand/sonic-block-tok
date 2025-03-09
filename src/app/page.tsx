@@ -13,13 +13,42 @@ export default function HomePage() {
   const router = useRouter();
   
   // Get a featured video for the hero section
-  const featuredVideo = videos.find(v => v.id === "3") || videos[0];
+  const featuredVideo = videos.find(v => v.id === "3") || videos[0]; // Digital Fashion video
   
-  // Filter videos by categories
-  const aiArtVideos = videos.filter(v => v.categories.includes("AI Art")).slice(0, 6);
-  const techVideos = videos.filter(v => v.categories.includes("Tech")).slice(0, 6);
-  const trendingVideos = [...videos].sort((a, b) => b.views - a.views).slice(0, 6);
-  const nftVideos = videos.filter(v => v.isNFT).slice(0, 6);
+  // Filter videos by categories - make sure each section has different videos
+  const animationVideos = videos.filter(v => 
+    v.title.includes("Animation") || 
+    v.title.includes("Neural") || 
+    (v.description && v.description.includes("animation"))
+  ).slice(0, 6);
+  
+  const aiArtVideos = videos.filter(v => 
+    v.categories.includes("AI Art") && 
+    !animationVideos.some(av => av.id === v.id)
+  ).slice(0, 6);
+  
+  const techVideos = videos.filter(v => 
+    v.categories.includes("Tech") && 
+    !aiArtVideos.some(av => av.id === v.id) &&
+    !animationVideos.some(av => av.id === v.id)
+  ).slice(0, 6);
+  
+  const trendingVideos = [...videos]
+    .sort((a, b) => b.views - a.views)
+    .filter(v => 
+      !aiArtVideos.some(av => av.id === v.id) &&
+      !techVideos.some(tv => tv.id === v.id) &&
+      !animationVideos.some(av => av.id === v.id)
+    ).slice(0, 6);
+    
+  const nftVideos = videos
+    .filter(v => v.isNFT)
+    .filter(v => 
+      !aiArtVideos.some(av => av.id === v.id) &&
+      !techVideos.some(tv => tv.id === v.id) &&
+      !animationVideos.some(av => av.id === v.id) &&
+      !trendingVideos.some(tv => tv.id === v.id)
+    ).slice(0, 6);
 
   const navigateToCreate = () => {
     router.push('/create');
@@ -36,11 +65,11 @@ export default function HomePage() {
                 <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
                   <span className="block">AI-Generated</span>
                   <span className="bg-gradient-to-r from-purple-500 to-blue-600 bg-clip-text text-transparent">
-                    Short Videos
+                    Animated Videos
                   </span>
                 </h1>
                 <p className="text-xl text-muted-foreground">
-                  Earn tokens for watching, sharing, and interacting with AI-generated content.
+                  Create stunning animations from text, earn tokens, and join the future of digital content.
                 </p>
                 <div className="flex flex-col gap-4 sm:flex-row">
                   <Button size="lg" variant="primary" onClick={navigateToCreate}>
@@ -72,7 +101,7 @@ export default function HomePage() {
               </div>
               <p className="mb-4">
                 Create stunning short videos from just a text description! Our AI will generate high-quality
-                videos based on your prompt. Perfect for content creators, marketers, and anyone who wants to
+                animations based on your prompt. Perfect for content creators, marketers, and anyone who wants to
                 create engaging visual content without specialized equipment or skills.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -84,7 +113,7 @@ export default function HomePage() {
                     <h3 className="font-medium">Enter your prompt</h3>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Describe the video you want to create with as much detail as possible.
+                    Describe the animation you want to create with as much detail as possible.
                   </p>
                 </div>
                 <div className="rounded-lg bg-background p-4 shadow-sm">
@@ -95,7 +124,7 @@ export default function HomePage() {
                     <h3 className="font-medium">AI generates your video</h3>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Our advanced AI models create a unique video based on your description.
+                    Our advanced AI models create a unique animated video based on your description.
                   </p>
                 </div>
                 <div className="rounded-lg bg-background p-4 shadow-sm">
@@ -106,7 +135,7 @@ export default function HomePage() {
                     <h3 className="font-medium">Use, share or mint as NFT</h3>
                   </div>
                   <p className="text-sm text-muted-foreground">
-                    Download your video, share it on the platform, or mint it as an NFT to earn tokens.
+                    Download your animation, share it on the platform, or mint it as an NFT to earn tokens.
                   </p>
                 </div>
               </div>
@@ -150,6 +179,15 @@ export default function HomePage() {
             <h2 className="text-2xl font-bold">Trending Now</h2>
           </div>
           <VideoFeed videos={trendingVideos} />
+        </section>
+
+        {/* Animation Videos */}
+        <section className="container mx-auto">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-6 w-6 text-indigo-500" />
+            <h2 className="text-2xl font-bold">AI Animations</h2>
+          </div>
+          <VideoFeed videos={animationVideos} />
         </section>
 
         {/* AI Art Videos */}

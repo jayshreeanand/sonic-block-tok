@@ -52,68 +52,68 @@ export const categories: Category[] = [
   { id: "8", name: "Comedy", icon: "smile" },
 ];
 
-// Sample real videos (Google sample videos)
+// Sample real videos (Animation and AI-style videos)
 const realVideos = [
   {
     url: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
-    title: "Big Buck Bunny",
-    description: "Three rodents amuse themselves by harassing creatures of the forest. However, the fly can be a dangerous opponent when cornered."
+    title: "Animated Dreamscape",
+    description: "A beautiful 3D animated world created using advanced AI algorithms and neural rendering."
   },
   {
     url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
     thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
-    title: "Elephant's Dream",
-    description: "The first Blender Open Movie from 2006"
-  },
-  {
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
-    title: "For Bigger Blazes",
-    description: "HBO GO now works with Chromecast -- the easiest way to enjoy online video on your TV."
-  },
-  {
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
-    title: "For Bigger Escapes",
-    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
-  },
-  {
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg",
-    title: "For Bigger Fun",
-    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
-  },
-  {
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
-    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerJoyrides.jpg",
-    title: "For Bigger Joyrides",
-    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
-  },
-  {
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
-    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerMeltdowns.jpg",
-    title: "For Bigger Meltdowns",
-    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
+    title: "Neural Network Fantasy",
+    description: "An abstract journey through the mind of an AI, visualizing how neural networks perceive and generate imagery."
   },
   {
     url: "https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
     thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
-    title: "Sintel",
-    description: "Sintel is an independently produced short film, initiated by the Blender Foundation."
-  },
-  {
-    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
-    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/SubaruOutbackOnStreetAndDirt.jpg",
-    title: "Subaru Outback On Street And Dirt",
-    description: "Driving in the city and off-road with the Subaru Outback."
+    title: "AI Storyteller",
+    description: "A cinematic short film created entirely by AI, showcasing the future of content creation."
   },
   {
     url: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
     thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
-    title: "Tears of Steel",
-    description: "Tears of Steel was realized with crowd-funding by users of the open source 3D creation tool Blender."
+    title: "Digital Renaissance",
+    description: "AI-powered animation that blends classic art styles with futuristic visuals for a unique aesthetic experience."
   },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
+    title: "Crypto Motion",
+    description: "Dynamic visualization of blockchain technology and cryptocurrency concepts through motion graphics."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
+    title: "Future Fashion",
+    description: "AI-generated fashion concepts brought to life with stunning animation and digital fabric simulation."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg",
+    title: "Particle Dreams",
+    description: "Abstract particle-based animation created using generative adversarial networks for mesmerizing visual effects."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerJoyrides.jpg",
+    title: "Synthetic Reality",
+    description: "Photorealistic animation that blurs the line between real footage and AI-generated content."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerMeltdowns.jpg",
+    title: "Neural Style Transfer",
+    description: "A demonstration of neural style transfer technology applied to video, creating mesmerizing visual transformations."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/SubaruOutbackOnStreetAndDirt.jpg",
+    title: "Motion Synthesis",
+    description: "AI-powered motion synthesis creating fluid animations from simple text prompts and concepts."
+  }
 ];
 
 // Use fixed seeds for video IDs to avoid hydration errors
@@ -126,13 +126,13 @@ const FIXED_SEEDS = {
   tokens: [2450, 1680, 2100, 3100, 980, 3800, 1450, 2680, 1250, 3400, 1950, 2800, 1350, 2250, 3200, 1750, 1050]
 };
 
-// Generate more videos with deterministic values but real video URLs
+// Generate videos with AI-focused themes
 export const videos: Video[] = [
   // First 3 are high-quality videos with modified metadata
   {
     id: "1",
     title: "AI Generated Symphony",
-    description: "A beautiful symphony composed entirely by AI and visualized with stunning imagery.",
+    description: "A beautiful symphony composed entirely by AI and visualized with stunning animation effects.",
     url: realVideos[0].url,
     thumbnail: realVideos[0].thumbnail,
     creator: users[0],
@@ -149,8 +149,8 @@ export const videos: Video[] = [
   },
   {
     id: "2",
-    title: "Future of Blockchain",
-    description: "Exploring how blockchain will transform digital ownership and reinvent the creative economy.",
+    title: "Blockchain Visualized",
+    description: "An immersive animated journey through blockchain technology and decentralized networks.",
     url: realVideos[1].url,
     thumbnail: realVideos[1].thumbnail,
     creator: users[1],
@@ -166,8 +166,8 @@ export const videos: Video[] = [
   },
   {
     id: "3",
-    title: "Digital Fashion Collection",
-    description: "The first-ever fully AI-generated fashion collection showcasing the future of digital fashion.",
+    title: "Digital Fashion Revolution",
+    description: "The first-ever fully AI-generated fashion collection brought to life with stunning 3D animation.",
     url: realVideos[2].url,
     thumbnail: realVideos[2].thumbnail,
     creator: users[2],
@@ -207,14 +207,13 @@ for (let i = 0; i < 17; i++) {
   // Deterministic boolean based on seedIndex
   const isNFT = seedIndex % 3 === 0;
   
-  // AI-inspired titles and descriptions
+  // Get the real video data
   const realVideo = realVideos[realVideoIndex];
-  const aiPrefix = seedIndex % 2 === 0 ? "AI-Generated" : "Neural Network";
   
   videos.push({
     id: videoId,
-    title: `${aiPrefix} ${realVideo.title}`,
-    description: `${realVideo.description} Created using the latest AI video generation technology.`,
+    title: realVideo.title,
+    description: realVideo.description,
     url: realVideo.url,
     thumbnail: realVideo.thumbnail,
     creator: users[randomUserIndex],
