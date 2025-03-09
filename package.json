@@ -13,7 +13,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "echo 'Skipping native dependencies for hackathon demo'"
   },
   "dependencies": {
     "@injectivelabs/sdk-ts": "^1.14.41",
@@ -60,5 +61,12 @@
     "typescript",
     "tailwindcss"
   ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "optionalDependencies": {
+    "usb": "*",
+    "ripple-lib": "*"
+  },
   "license": "MIT"
 }
