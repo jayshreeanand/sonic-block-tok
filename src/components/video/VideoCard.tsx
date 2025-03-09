@@ -26,7 +26,15 @@ export function VideoCard({ video, layoutType = "grid" }: VideoCardProps) {
     tokens,
     isNFT,
     nftPrice,
+    duration,
   } = video;
+
+  // Format duration in a deterministic way
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+  };
 
   return (
     <Card
@@ -48,10 +56,9 @@ export function VideoCard({ video, layoutType = "grid" }: VideoCardProps) {
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
-          {video.duration && (
+          {duration && (
             <div className="absolute bottom-2 right-2 rounded-md bg-black/70 px-2 py-1 text-xs text-white">
-              {Math.floor(video.duration / 60)}:
-              {(video.duration % 60).toString().padStart(2, "0")}
+              {formatDuration(duration)}
             </div>
           )}
           {isNFT && (

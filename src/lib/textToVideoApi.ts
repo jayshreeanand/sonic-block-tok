@@ -28,7 +28,7 @@ const sampleVideos = [
   }
 ];
 
-// For hackathon demo: Use real videos but with simulated AI generation
+// For hackathon demo: Use real videos with deterministic selection
 export async function generateVideoFromText(prompt: string) {
   try {
     console.log("Generating video for prompt:", prompt);
@@ -36,9 +36,10 @@ export async function generateVideoFromText(prompt: string) {
     // Simulate processing with real API
     await simulateProcessing();
     
-    // Choose a random sample video
-    const randomIndex = Math.floor(Math.random() * sampleVideos.length);
-    const selectedVideo = sampleVideos[randomIndex];
+    // Choose a deterministic sample video based on prompt length
+    // This ensures same prompt = same video every time
+    const promptHash = prompt.length % sampleVideos.length;
+    const selectedVideo = sampleVideos[promptHash];
     
     // For a real implementation, you would call the OpenAI API
     // and save the result to your storage
@@ -51,8 +52,8 @@ export async function generateVideoFromText(prompt: string) {
 }
 
 // Function to get video generation status
-export async function getVideoGenerationStatus(id: string) {
-  console.log("Checking status for job:", id);
+export async function getVideoGenerationStatus(_id: string) {
+  console.log("Checking status for job:", _id);
   
   return {
     status: "completed",

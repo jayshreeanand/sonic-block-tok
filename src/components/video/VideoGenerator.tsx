@@ -15,12 +15,15 @@ const PROMPT_SUGGESTIONS = [
   "A documentary-style footage of wildlife in an African savanna",
 ];
 
+// Default prompt to avoid hydration issues
+const DEFAULT_PROMPT = PROMPT_SUGGESTIONS[0];
+
 interface VideoGeneratorProps {
   onVideoGenerated?: (videoUrl: string, thumbnailUrl: string) => void;
 }
 
 export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
@@ -29,12 +32,20 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [hasMounted, setHasMounted] = useState(false);
 
-  // Set a random suggestion as initial value
+  // Only run on client-side to avoid hydration errors
   useEffect(() => {
-    const randomSuggestion = PROMPT_SUGGESTIONS[Math.floor(Math.random() * PROMPT_SUGGESTIONS.length)];
-    setPrompt(randomSuggestion);
+    setHasMounted(true);
   }, []);
+
+  // Use a random suggestion, but only after mounting on client
+  useEffect(() => {
+    if (hasMounted) {
+      const randomIndex = Math.floor(Math.random() * PROMPT_SUGGESTIONS.length);
+      setPrompt(PROMPT_SUGGESTIONS[randomIndex]);
+    }
+  }, [hasMounted]);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);

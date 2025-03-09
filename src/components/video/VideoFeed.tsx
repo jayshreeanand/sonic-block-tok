@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { VideoCard } from "./VideoCard";
 import { Video } from "@/lib/types";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -22,6 +22,12 @@ export function VideoFeed({
   const displayVideos = limit ? videos.slice(0, limit) : videos;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  // Only run client-side code after component has mounted
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   const handleScroll = (direction: "left" | "right") => {
     if (!scrollRef.current) return;
@@ -50,7 +56,8 @@ export function VideoFeed({
     );
   }
 
-  const hasOverflow = displayVideos.length > 4;
+  // Only compute hasOverflow on client-side to avoid hydration mismatch
+  const hasOverflow = hasMounted && displayVideos.length > 4;
 
   return (
     <div className="space-y-4">

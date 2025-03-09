@@ -30,10 +30,16 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
   const [isMuted, setIsMuted] = useState(false);
   const [earnedTokens, setEarnedTokens] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   
   // Simulated token earning rate (tokens per second)
   const tokenRate = 0.5;
   const tokenInterval = useRef<NodeJS.Timeout | null>(null);
+
+  // Sets hasMounted to true once the component mounts in the browser
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   useEffect(() => {
     const videoElement = videoRef.current;
@@ -116,6 +122,7 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
     videoRef.current.currentTime = newTime;
   };
   
+  // Use a deterministic formatting function for time display
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
     const seconds = Math.floor(time % 60);
@@ -135,7 +142,7 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
       />
       
       {/* Token earning indicator */}
-      {isPlaying && (
+      {isPlaying && hasMounted && (
         <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/70 rounded-full py-1 px-3 text-white">
           <Coins className="h-4 w-4 text-amber-400" />
           <span className="text-amber-400 font-medium">+{earnedTokens.toFixed(1)}</span>
@@ -171,9 +178,11 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
                 <Volume2 className="h-5 w-5 text-white" />
               )}
             </button>
-            <span className="text-sm text-white">
-              {formatTime(currentTime)} / {formatTime(duration)}
-            </span>
+            {hasMounted && (
+              <span className="text-sm text-white">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
+            )}
           </div>
           
           <div className="flex items-center gap-3">

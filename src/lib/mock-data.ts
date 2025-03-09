@@ -53,8 +53,19 @@ export const categories: Category[] = [
   { id: "8", name: "Comedy", icon: "smile" },
 ];
 
-// Mock videos
+// Use fixed seeds for video IDs to avoid hydration errors
+const FIXED_SEEDS = {
+  videoIds: [5, 12, 8, 19, 3, 10, 7, 15, 2, 11, 6, 14, 9, 4, 13, 17, 1],
+  durations: [45, 30, 62, 18, 90, 25, 55, 33, 75, 42, 22, 68, 37, 51, 28, 60, 40],
+  likes: [5621, 3210, 4890, 7500, 1250, 8900, 3400, 6750, 2100, 9500, 4200, 6300, 2800, 5100, 7200, 8400, 1800],
+  shares: [1205, 890, 1420, 750, 230, 1800, 560, 980, 410, 1650, 720, 1380, 340, 920, 1520, 680, 280],
+  views: [78500, 45200, 62700, 98000, 15400, 112000, 31500, 85300, 22700, 103500, 56800, 78900, 35200, 67400, 92800, 41600, 18900],
+  tokens: [2450, 1680, 2100, 3100, 980, 3800, 1450, 2680, 1250, 3400, 1950, 2800, 1350, 2250, 3200, 1750, 1050]
+};
+
+// Generate more videos with deterministic values
 export const videos: Video[] = [
+  // First 3 are your original hand-crafted videos
   {
     id: "1",
     title: "AI Generated Symphony",
@@ -110,34 +121,45 @@ export const videos: Video[] = [
   },
 ];
 
-// Generate more videos
-for (let i = 4; i <= 20; i++) {
-  const randomUser = users[getRandomInt(0, users.length - 1)];
-  const randomCategoryIndices = Array.from(
-    { length: getRandomInt(1, 3) },
-    () => getRandomInt(0, categories.length - 1)
-  );
-  const randomCategories = randomCategoryIndices.map((index) => categories[index].name);
+// Add the remaining 17 videos with deterministic values
+for (let i = 0; i < FIXED_SEEDS.videoIds.length; i++) {
+  const videoId = (i + 4).toString(); // Start from 4 since we already have 3
+  const seedIndex = i % FIXED_SEEDS.videoIds.length;
+  const randomUserIndex = seedIndex % users.length;
+  
+  // Assign 1-3 categories deterministically
+  const categoryCount = (seedIndex % 3) + 1;
+  const categoryIndices = [];
+  for (let j = 0; j < categoryCount; j++) {
+    categoryIndices.push((seedIndex + j) % categories.length);
+  }
+  const videoCategories = categoryIndices.map(index => categories[index].name);
+  
+  // Deterministic date in the past month
+  const daysAgo = (seedIndex % 30) + 1;
+  const createdDate = new Date();
+  createdDate.setDate(createdDate.getDate() - daysAgo);
+  
+  // Deterministic boolean based on seedIndex
+  const isNFT = seedIndex % 3 === 0;
   
   videos.push({
-    id: i.toString(),
-    title: `AI BlockTok Video ${i}`,
-    description: `This is an AI-generated video #${i}`,
-    url: `/videos/video${i}.mp4`,
-    thumbnail: `/thumbnails/thumbnail${i}.jpg`,
-    creator: randomUser,
-    likes: getRandomInt(100, 10000),
-    comments: getRandomInt(10, 1000),
-    shares: getRandomInt(50, 2000),
-    views: getRandomInt(1000, 100000),
-    tokens: getRandomInt(100, 5000),
-    categories: randomCategories,
-    createdAt: new Date(
-      Date.now() - getRandomInt(1, 30) * 24 * 60 * 60 * 1000
-    ).toISOString(),
-    duration: getRandomInt(15, 120),
-    isNFT: Math.random() > 0.7,
-    nftPrice: Math.random() > 0.7 ? parseFloat((Math.random() * 2).toFixed(2)) : undefined,
+    id: videoId,
+    title: `AI BlockTok Video ${videoId}`,
+    description: `This is an AI-generated video #${videoId}`,
+    url: `/videos/video${videoId}.mp4`,
+    thumbnail: `/thumbnails/thumbnail${videoId}.jpg`,
+    creator: users[randomUserIndex],
+    likes: FIXED_SEEDS.likes[seedIndex],
+    comments: Math.floor(FIXED_SEEDS.likes[seedIndex] / 10),
+    shares: FIXED_SEEDS.shares[seedIndex],
+    views: FIXED_SEEDS.views[seedIndex],
+    tokens: FIXED_SEEDS.tokens[seedIndex],
+    categories: videoCategories,
+    createdAt: createdDate.toISOString(),
+    duration: FIXED_SEEDS.durations[seedIndex],
+    isNFT: isNFT,
+    nftPrice: isNFT ? Number((0.2 + seedIndex * 0.1).toFixed(2)) : undefined,
   });
 }
 
