@@ -1,14 +1,18 @@
+"use client";
+
 import { MainLayout } from "@/components/layout/MainLayout";
 import { VideoFeed } from "@/components/video/VideoFeed";
 import { Button } from "@/components/ui/button";
 import { videos, categories } from "@/lib/mock-data";
 import { Search, Sliders } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DiscoverPage({
   searchParams,
 }: {
   searchParams: { category?: string; q?: string };
 }) {
+  const router = useRouter();
   const { category, q } = searchParams;
 
   // Filter videos by category if specified
@@ -34,6 +38,10 @@ export default function DiscoverPage({
         video.categories.some((cat) => cat.toLowerCase().includes(searchTerm))
     );
   }
+
+  const clearFilters = () => {
+    router.push('/discover');
+  };
 
   return (
     <MainLayout>
@@ -136,7 +144,7 @@ export default function DiscoverPage({
               <Button
                 variant="outline"
                 className="mt-4"
-                onClick={() => window.location.href = '/discover'}
+                onClick={clearFilters}
               >
                 Clear filters
               </Button>

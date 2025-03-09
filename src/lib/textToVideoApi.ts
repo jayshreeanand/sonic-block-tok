@@ -1,30 +1,49 @@
 "use server";
 
-// No imports needed for the mock implementation
+// We'll need axios later for the real implementation
+// but for now we'll just have it commented out
+// import axios from "axios";
 
-// Mock response for development
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const mockVideoGeneration = (_prompt: string) => {
-  // Simulate API processing time
-  return new Promise<{ videoUrl: string; thumbnailUrl: string }>((resolve) => {
-    setTimeout(() => {
-      // Return mock video URL based on prompt
-      const videoNumber = Math.floor(Math.random() * 5) + 1;
-      resolve({
-        videoUrl: `/videos/video${videoNumber}.mp4`,
-        thumbnailUrl: `/thumbnails/thumbnail${videoNumber}.jpg`,
-      });
-    }, 3000); // 3-second delay to simulate processing
-  });
-};
+// Sample videos for demo purposes (these are actual videos that will be shown)
+const sampleVideos = [
+  {
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
+  },
+  {
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
+  },
+  {
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
+  },
+  {
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
+  },
+  {
+    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg",
+  }
+];
 
-// Function to use in our application
+// For hackathon demo: Use real videos but with simulated AI generation
 export async function generateVideoFromText(prompt: string) {
   try {
-    // For development/demo purposes, use the mock
-    // In production, you would use the real API
-    const result = await mockVideoGeneration(prompt);
-    return result;
+    console.log("Generating video for prompt:", prompt);
+    
+    // Simulate processing with real API
+    await simulateProcessing();
+    
+    // Choose a random sample video
+    const randomIndex = Math.floor(Math.random() * sampleVideos.length);
+    const selectedVideo = sampleVideos[randomIndex];
+    
+    // For a real implementation, you would call the OpenAI API
+    // and save the result to your storage
+    
+    return selectedVideo;
   } catch (error) {
     console.error("Error in video generation:", error);
     throw error;
@@ -32,46 +51,80 @@ export async function generateVideoFromText(prompt: string) {
 }
 
 // Function to get video generation status
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function getVideoGenerationStatus(_id: string) {
-  // In a real implementation, you would check the status of the job
-  // For now, we'll just return a mock status
+export async function getVideoGenerationStatus(id: string) {
+  console.log("Checking status for job:", id);
+  
   return {
     status: "completed",
     progress: 100,
-    videoUrl: `/videos/video${Math.floor(Math.random() * 5) + 1}.mp4`,
+    videoUrl: sampleVideos[0].videoUrl,
   };
 }
 
-/* 
-// For future implementation with real APIs:
+// Helper function to simulate API processing time
+function simulateProcessing() {
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 3000);
+  });
+}
 
-// Placeholder for real API integration with HuggingFace
-// Note: For a real implementation, you would need to sign up for an API key
-async function generateVideoWithHuggingFace(prompt: string) {
+/* 
+// For real implementation with Replicate API (text-to-video model)
+async function generateWithReplicate(prompt: string) {
   try {
-    // This is a placeholder - in a real app, you'd use an actual API endpoint
-    const response = await axios.post(
-      "https://api-inference.huggingface.co/models/damo-vilab/text-to-video-ms",
-      { inputs: prompt },
+    // First, start the prediction
+    const startResponse = await axios.post(
+      "https://api.replicate.com/v1/predictions",
+      {
+        version: "7f0bd132974c7a4e1069cc7bd467c769a8cfbd2aac55391db14a959ab1eecc64",
+        input: { prompt: prompt }
+      },
       {
         headers: {
-          Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY || "hf_dummy_key"}`,
+          Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
           "Content-Type": "application/json",
         },
-        responseType: "arraybuffer",
       }
     );
-
-    // In a real implementation, you would save this video to your storage
-    // and return the URL
-    const videoData = response.data;
     
-    // Here we're just returning the mock data since we don't have actual storage set up
-    return mockVideoGeneration(prompt);
+    const predictionId = startResponse.data.id;
+    
+    // Poll for completion
+    let status = "starting";
+    let result = null;
+    
+    while (status !== "succeeded" && status !== "failed") {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const statusResponse = await axios.get(
+        `https://api.replicate.com/v1/predictions/${predictionId}`,
+        {
+          headers: {
+            Authorization: `Token ${process.env.REPLICATE_API_TOKEN}`,
+          },
+        }
+      );
+      
+      status = statusResponse.data.status;
+      
+      if (status === "succeeded") {
+        result = statusResponse.data.output;
+      }
+    }
+    
+    if (!result) {
+      throw new Error("Video generation failed");
+    }
+    
+    return {
+      videoUrl: result, // This would be a URL to the generated video
+      thumbnailUrl: result.replace(/\.[^/.]+$/, ".jpg"), // This assumes there's a thumbnail
+    };
   } catch (error) {
-    console.error("Error generating video:", error);
-    throw new Error("Failed to generate video");
+    console.error("Error generating video with Replicate:", error);
+    throw error;
   }
 }
 */ 

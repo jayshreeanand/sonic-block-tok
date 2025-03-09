@@ -1,3 +1,5 @@
+"use client";
+
 import { MainLayout } from "@/components/layout/MainLayout";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
 import { VideoCard } from "@/components/video/VideoCard";

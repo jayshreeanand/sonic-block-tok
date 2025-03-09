@@ -1,3 +1,5 @@
+"use client";
+
 import { MainLayout } from "@/components/layout/MainLayout";
 import { VideoFeed } from "@/components/video/VideoFeed";
 import { VideoPlayer } from "@/components/video/VideoPlayer";
@@ -5,8 +7,11 @@ import { Button } from "@/components/ui/button";
 import { videos, categories } from "@/lib/mock-data";
 import { Coins, TrendingUp, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+  const router = useRouter();
+  
   // Get a featured video for the hero section
   const featuredVideo = videos[0];
   
@@ -15,6 +20,10 @@ export default function HomePage() {
   const techVideos = videos.filter(v => v.categories.includes("Tech"));
   const trendingVideos = [...videos].sort((a, b) => b.views - a.views).slice(0, 10);
   const nftVideos = videos.filter(v => v.isNFT);
+
+  const navigateToCreate = () => {
+    router.push('/create');
+  };
 
   return (
     <MainLayout>
@@ -34,9 +43,9 @@ export default function HomePage() {
                   Earn tokens for watching, sharing, and interacting with AI-generated content.
                 </p>
                 <div className="flex flex-col gap-4 sm:flex-row">
-                  <Button size="lg" variant="primary">
+                  <Button size="lg" variant="primary" onClick={navigateToCreate}>
                     <Sparkles className="mr-2 h-5 w-5" />
-                    <span>Discover Content</span>
+                    <span>Generate Video</span>
                   </Button>
                   <Button size="lg" variant="outline">
                     <Coins className="mr-2 h-5 w-5" />
@@ -50,6 +59,61 @@ export default function HomePage() {
               </div>
               <div className="rounded-lg overflow-hidden shadow-xl">
                 <VideoPlayer video={featuredVideo} />
+              </div>
+            </div>
+
+            {/* New Feature Highlight */}
+            <div className="mt-8 rounded-xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="rounded-full bg-purple-500/20 p-2">
+                  <Sparkles className="h-6 w-6 text-purple-600" />
+                </div>
+                <h2 className="text-xl font-bold">New: Text-to-Video AI Generation</h2>
+              </div>
+              <p className="mb-4">
+                Create stunning short videos from just a text description! Our AI will generate high-quality
+                videos based on your prompt. Perfect for content creators, marketers, and anyone who wants to
+                create engaging visual content without specialized equipment or skills.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="rounded-lg bg-background p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="rounded-full bg-green-100 p-1">
+                      <span className="text-green-600 font-bold">1</span>
+                    </div>
+                    <h3 className="font-medium">Enter your prompt</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Describe the video you want to create with as much detail as possible.
+                  </p>
+                </div>
+                <div className="rounded-lg bg-background p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="rounded-full bg-green-100 p-1">
+                      <span className="text-green-600 font-bold">2</span>
+                    </div>
+                    <h3 className="font-medium">AI generates your video</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Our advanced AI models create a unique video based on your description.
+                  </p>
+                </div>
+                <div className="rounded-lg bg-background p-4 shadow-sm">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="rounded-full bg-green-100 p-1">
+                      <span className="text-green-600 font-bold">3</span>
+                    </div>
+                    <h3 className="font-medium">Use, share or mint as NFT</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Download your video, share it on the platform, or mint it as an NFT to earn tokens.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <Button variant="primary" size="lg" onClick={navigateToCreate}>
+                  Try It Now
+                </Button>
               </div>
             </div>
           </div>

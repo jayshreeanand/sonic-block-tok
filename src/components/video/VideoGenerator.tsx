@@ -1,10 +1,19 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { generateVideoFromText } from "@/lib/textToVideoApi";
-import { Sparkles, AlertCircle, Check, Loader2 } from "lucide-react";
+import { Sparkles, AlertCircle, Check, Loader2, PlayCircle, Download } from "lucide-react";
+
+// Prompt suggestions for better video generation
+const PROMPT_SUGGESTIONS = [
+  "A cinematic aerial view of a futuristic city with flying cars",
+  "A slow-motion shot of ocean waves crashing on a beach at sunset",
+  "A timelapse of flowers blooming in a garden with bokeh effects",
+  "A 3D animated character dancing in a neon-lit cyberpunk street",
+  "A documentary-style footage of wildlife in an African savanna",
+];
 
 interface VideoGeneratorProps {
   onVideoGenerated?: (videoUrl: string, thumbnailUrl: string) => void;
@@ -17,7 +26,15 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
   const [progress, setProgress] = useState(0);
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
   const [generatedThumbnailUrl, setGeneratedThumbnailUrl] = useState<string | null>(null);
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Set a random suggestion as initial value
+  useEffect(() => {
+    const randomSuggestion = PROMPT_SUGGESTIONS[Math.floor(Math.random() * PROMPT_SUGGESTIONS.length)];
+    setPrompt(randomSuggestion);
+  }, []);
 
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
@@ -33,6 +50,8 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
       setIsGenerating(true);
       setError(null);
       setProgress(0);
+      setIsVideoLoaded(false);
+      setIsVideoPlaying(false);
 
       // Simulate progress updates
       const progressInterval = setInterval(() => {
@@ -70,7 +89,55 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     setGeneratedThumbnailUrl(null);
     setError(null);
     setProgress(0);
+    setIsVideoLoaded(false);
+    setIsVideoPlaying(false);
   };
+
+  const handleVideoLoad = () => {
+    setIsVideoLoaded(true);
+  };
+
+  const handleDownload = () => {
+    if (generatedVideoUrl) {
+      const a = document.createElement('a');
+      a.href = generatedVideoUrl;
+      a.download = `blocktok-ai-video-${Date.now()}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  };
+
+  const toggleVideoPlay = () => {
+    if (videoRef.current) {
+      if (isVideoPlaying) {
+        videoRef.current.pause();
+      } else {
+        videoRef.current.play();
+      }
+      setIsVideoPlaying(!isVideoPlaying);
+    }
+  };
+
+  // Handle video events
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+
+    const handlePlay = () => setIsVideoPlaying(true);
+    const handlePause = () => setIsVideoPlaying(false);
+    const handleEnded = () => setIsVideoPlaying(false);
+
+    videoElement.addEventListener('play', handlePlay);
+    videoElement.addEventListener('pause', handlePause);
+    videoElement.addEventListener('ended', handleEnded);
+
+    return () => {
+      videoElement.removeEventListener('play', handlePlay);
+      videoElement.removeEventListener('pause', handlePause);
+      videoElement.removeEventListener('ended', handleEnded);
+    };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -94,6 +161,23 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
           <p className="mt-1 text-xs text-muted-foreground">
             Be specific and descriptive for best results. Include details about scenery, subjects, actions, and style.
           </p>
+        </div>
+
+        {/* Prompt Suggestions */}
+        <div className="mb-4">
+          <p className="text-sm font-medium mb-2">Try these prompts:</p>
+          <div className="flex flex-wrap gap-2">
+            {PROMPT_SUGGESTIONS.map((suggestion, index) => (
+              <button
+                key={index}
+                onClick={() => setPrompt(suggestion)}
+                className="text-xs px-2 py-1 bg-accent/50 rounded-full hover:bg-accent transition-colors"
+                disabled={isGenerating}
+              >
+                {suggestion.length > 30 ? suggestion.substring(0, 30) + '...' : suggestion}
+              </button>
+            ))}
+          </div>
         </div>
         
         {/* Error message */}
@@ -165,22 +249,41 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
               <h3 className="font-medium">Video Generated Successfully!</h3>
             </div>
             
-            <div className="rounded-lg overflow-hidden bg-black aspect-video mb-4">
+            <div className="rounded-lg overflow-hidden bg-black aspect-video mb-4 relative">
               <video
                 ref={videoRef}
                 src={generatedVideoUrl}
                 poster={generatedThumbnailUrl || undefined}
                 controls
                 className="w-full h-full"
+                onLoadedData={handleVideoLoad}
+                preload="auto"
               />
+              
+              {!isVideoLoaded && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <Loader2 className="h-8 w-8 animate-spin text-white" />
+                </div>
+              )}
+              
+              {isVideoLoaded && !isVideoPlaying && (
+                <button 
+                  onClick={toggleVideoPlay}
+                  className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition-colors"
+                >
+                  <PlayCircle className="h-16 w-16 text-white" />
+                </button>
+              )}
             </div>
             
             <div className="flex justify-between">
-              <Button variant="outline" size="sm">
-                Download Video
+              <Button variant="outline" size="sm" onClick={handleDownload}>
+                <Download className="mr-2 h-4 w-4" />
+                <span>Download Video</span>
               </Button>
               <Button variant="primary" size="sm">
-                Use This Video
+                <Sparkles className="mr-2 h-4 w-4" />
+                <span>Use This Video</span>
               </Button>
             </div>
           </CardContent>
