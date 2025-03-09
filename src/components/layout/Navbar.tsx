@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,11 @@ import { formatAddress } from "@/lib/utils";
 import { Home, TrendingUp, Compass, Plus, Wallet, Bell, LogOut, LogIn } from "lucide-react";
 import { users } from "@/lib/mock-data";
 
-export function Navbar() {
+interface NavbarProps {
+  children?: ReactNode;
+}
+
+export function Navbar({ children }: NavbarProps) {
   const pathname = usePathname();
   const [isConnected, setIsConnected] = useState(false);
   const mockUser = users[0];
@@ -68,7 +72,9 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          {isConnected ? (
+          {children ? (
+            children
+          ) : isConnected ? (
             <>
               <div className="hidden md:flex items-center gap-1 rounded-full bg-primary/10 px-4 py-1 text-primary">
                 <Wallet className="h-4 w-4" />

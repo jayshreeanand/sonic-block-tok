@@ -8,6 +8,7 @@ import { videos, categories } from "@/lib/mock-data";
 import { Coins, TrendingUp, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ConnectButton } from "@/components/wallet/ConnectButton";
 
 export default function HomePage() {
   const router = useRouter();
@@ -227,9 +228,7 @@ export default function HomePage() {
               <p className="mb-6">
                 Connect your wallet and start earning tokens for watching videos, creating content, and participating in the BlockTok ecosystem.
               </p>
-              <Button size="lg" variant="default" className="bg-white text-purple-600 hover:bg-gray-100">
-                Connect Wallet
-              </Button>
+              <ConnectButton variant="default" size="lg" className="bg-white text-purple-600 hover:bg-gray-100" />
             </div>
             <div className="flex justify-center">
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 max-w-md">

@@ -1,0 +1,19 @@
+[package]
+name = "blocktok"
+version = "0.1.0"
+edition = "2021"
+description = "Solana program for BlockTok NFT minting and content tracking"
+
+[features]
+no-entrypoint = []
+
+[dependencies]
+solana-program = "1.17.7"
+borsh = "0.10.3"
+thiserror = "1.0.48"
+spl-token = { version = "4.0.0", features = ["no-entrypoint"] }
+spl-associated-token-account = { version = "2.2.0", features = ["no-entrypoint"] }
+metaplex-token-metadata = { version = "0.0.2", features = ["no-entrypoint"] }
+
+[lib]
+crate-type = ["cdylib", "lib"] 
