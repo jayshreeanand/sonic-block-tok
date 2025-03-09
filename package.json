@@ -1,7 +1,14 @@
 {
-  "name": "block-tok-new",
+  "name": "blocktok-ai",
   "version": "0.1.0",
   "private": true,
+  "description": "AI-powered short-form video generation platform on the Injective blockchain",
+  "author": "BlockTok Team",
+  "homepage": "https://blocktok.ai",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/blocktok-ai"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,16 +19,22 @@
     "@injectivelabs/sdk-ts": "^1.14.41",
     "@injectivelabs/wallet-ts": "^1.14.41",
     "@rainbow-me/rainbowkit": "^2.2.4",
+    "autoprefixer": "^10.4.14",
     "axios": "^1.8.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "ethers": "^6.13.5",
     "framer-motion": "^12.5.0",
     "lucide-react": "^0.483.0",
     "next": "15.2.3",
     "next-themes": "^0.4.6",
+    "postcss": "^8.4.24",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
     "shadcn-ui": "^0.9.5",
+    "tailwind-merge": "^3.0.2",
+    "tailwindcss": "^3.3.0",
     "viem": "^2.23.12",
     "wagmi": "^2.14.15"
   },
@@ -33,7 +46,19 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
-    "tailwindcss": "^4",
     "typescript": "^5"
-  }
+  },
+  "keywords": [
+    "blockchain",
+    "injective",
+    "ai",
+    "video",
+    "nft",
+    "web3",
+    "nextjs",
+    "react",
+    "typescript",
+    "tailwindcss"
+  ],
+  "license": "MIT"
 }
