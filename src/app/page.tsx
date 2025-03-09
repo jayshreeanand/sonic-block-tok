@@ -206,19 +206,19 @@ export default function HomePage() {
                       <span className="text-sm">3</span>
                     </div>
                     <span>Create and mint your own AI-generated videos as NFTs</span>
-                  </li>
+          </li>
                   <li className="flex items-start gap-2">
                     <div className="rounded-full bg-white/20 p-1 mt-1">
                       <span className="text-sm">4</span>
                     </div>
                     <span>Participate in campaigns and earn additional rewards</span>
-                  </li>
+          </li>
                 </ul>
               </div>
             </div>
-          </div>
+        </div>
         </section>
-      </div>
+    </div>
     </MainLayout>
   );
 }

@@ -5,7 +5,7 @@ BlockTok AI is an AI-powered short-form video generation platform on the Injecti
 ## 🚀 Features
 
 - **AI Video Generation**: Create AI-generated short-form videos with customizable options
-  - **Text-to-Video**: Generate videos from text descriptions
+  - **Text-to-Video**: Generate videos from text descriptions using Vadoo AI
   - **Style Presets**: Apply different artistic styles to generated videos
   - **Video Templates**: Use pre-made templates for quick creation
 - **Token Rewards**: Earn BTOK tokens for watching, sharing, and interacting with content
@@ -19,21 +19,52 @@ BlockTok AI is an AI-powered short-form video generation platform on the Injecti
 - **Frontend**: Next.js, React, TypeScript, TailwindCSS
 - **Blockchain**: Injective Protocol, Injective SDK
 - **AI**: Integration with AI video generation models
-  - HuggingFace Text-to-Video API (using damo-vilab/text-to-video-ms model)
+  - Vadoo AI API for text-to-video generation
   - Support for custom style presets and video templates
 - **Authentication**: Wallet authentication
+
+## 🎬 AI Video Generation
+
+BlockTok AI uses the Vadoo AI API to generate high-quality videos from text prompts. The platform allows creators to:
+
+1. Write detailed prompts describing the desired video
+2. Select voice, duration, and style preferences
+3. Generate professional-looking videos in minutes
+4. Mint these videos as NFTs or publish them to the feed
+
+To use the video generation feature:
+
+- Navigate to the Create page
+- Enter a detailed description of your desired video
+- Choose your preferred settings
+- Click "Generate Video"
+- Once completed, you can download, mint as NFT, or publish directly
+
+## 🔒 API Keys
+
+To use the video generation feature, you need to set up the following environment variables:
+
+```
+VADOO_API_KEY=your_vadoo_api_key_here
+```
+
+You can add these to a `.env.local` file in the root of the project.
 
 ## 🏗️ Project Structure
 
 ```
 src/
 ├── app/                 # Next.js app router pages
+│   ├── api/             # API routes including Vadoo webhook
+│   ├── create/          # Video creation page
+│   └── ...              # Other app pages
 ├── components/          # React components
 │   ├── layout/          # Layout components
 │   ├── ui/              # UI components
 │   └── video/           # Video-related components
 ├── lib/                 # Utility functions and types
 │   ├── mock-data.ts     # Mock data for development
+│   ├── textToVideoApi.ts # Vadoo API integration
 │   ├── types.ts         # TypeScript type definitions
 │   └── utils.ts         # Utility functions
 └── public/              # Static assets
@@ -79,13 +110,19 @@ cd blocktok-ai
 npm install
 ```
 
-3. Start the development server:
+3. Create a `.env.local` file with your API keys:
+
+```
+VADOO_API_KEY=your_vadoo_api_key_here
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🌐 Deployment
 

@@ -3,20 +3,22 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { generateVideoFromText } from "@/lib/textToVideoApi";
-import { Sparkles, AlertCircle, Check, Loader2, PlayCircle, Download } from "lucide-react";
+import { Sparkles, AlertCircle, Check, Loader2, PlayCircle, Download, Video, Wand2, Coins } from "lucide-react";
 
-// Prompt suggestions for better video generation
+// Prompt suggestions focused on visual content that Vadoo can generate well
 const PROMPT_SUGGESTIONS = [
-  "A cinematic aerial view of a futuristic city with flying cars",
-  "A slow-motion shot of ocean waves crashing on a beach at sunset",
-  "A timelapse of flowers blooming in a garden with bokeh effects",
-  "A 3D animated character dancing in a neon-lit cyberpunk street",
-  "A documentary-style footage of wildlife in an African savanna",
+  "A breathtaking aerial view of a futuristic city at sunset with flying cars",
+  "A slow-motion cinematic shot of ocean waves crashing on a tropical beach",
+  "A timelapse of a bustling city transitioning from day to night",
+  "A 3D animation of cryptocurrency coins and blockchain networks visualized",
+  "Documentary-style footage of AI robots working alongside humans",
 ];
 
 // Default prompt to avoid hydration issues
 const DEFAULT_PROMPT = PROMPT_SUGGESTIONS[0];
+
+// Generation states
+type GenerationState = "idle" | "generating" | "processing" | "completed" | "failed";
 
 interface VideoGeneratorProps {
   onVideoGenerated?: (videoUrl: string, thumbnailUrl: string) => void;
@@ -24,15 +26,17 @@ interface VideoGeneratorProps {
 
 export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [generationState, setGenerationState] = useState<GenerationState>("idle");
   const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
   const [generatedThumbnailUrl, setGeneratedThumbnailUrl] = useState<string | null>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [jobId, setJobId] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
+  const statusCheckInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Only run on client-side to avoid hydration errors
   useEffect(() => {
@@ -47,6 +51,43 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     }
   }, [hasMounted]);
 
+  // Clean up interval when component unmounts
+  useEffect(() => {
+    return () => {
+      if (statusCheckInterval.current) {
+        clearInterval(statusCheckInterval.current);
+      }
+    };
+  }, []);
+
+  // Function to simulate job progress (for demo purposes)
+  const simulateJobProgress = () => {
+    let currentProgress = 10;
+    
+    if (statusCheckInterval.current) {
+      clearInterval(statusCheckInterval.current);
+    }
+    
+    statusCheckInterval.current = setInterval(() => {
+      if (currentProgress >= 100) {
+        clearInterval(statusCheckInterval.current!);
+        setGenerationState("completed");
+        setProgress(100);
+        return;
+      }
+      
+      // Increase progress by random amount
+      const increment = Math.floor(Math.random() * 15) + 5;
+      currentProgress = Math.min(currentProgress + increment, 100);
+      setProgress(currentProgress);
+      
+      if (currentProgress >= 100) {
+        clearInterval(statusCheckInterval.current!);
+        setGenerationState("completed");
+      }
+    }, 800); // Update every 800ms for a nice progression
+  };
+
   const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPrompt(e.target.value);
   };
@@ -58,40 +99,52 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     }
 
     try {
-      setIsGenerating(true);
       setError(null);
       setProgress(0);
       setIsVideoLoaded(false);
       setIsVideoPlaying(false);
+      setJobId(null);
+      setGenerationState("generating");
+      setProgress(10);
 
-      // Simulate progress updates
-      const progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          const newProgress = prev + Math.floor(Math.random() * 10);
-          return newProgress > 90 ? 90 : newProgress;
-        });
-      }, 500);
-
-      // Call the API to generate the video
-      const result = await generateVideoFromText(prompt);
-
-      // Clear the interval and set progress to 100%
-      clearInterval(progressInterval);
-      setProgress(100);
+      // Call our API endpoint
+      const response = await fetch('/api/generate-video', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ prompt }),
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate video');
+      }
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to generate video');
+      }
+      
+      // Set state to processing
+      setGenerationState("processing");
+      setJobId(data.vid);
+      
+      // Start simulating progress for the demo
+      simulateJobProgress();
 
       // Update state with generated video
-      setGeneratedVideoUrl(result.videoUrl);
-      setGeneratedThumbnailUrl(result.thumbnailUrl);
+      setGeneratedVideoUrl(data.videoUrl);
+      setGeneratedThumbnailUrl(data.thumbnailUrl);
 
       // Notify parent component if callback is provided
       if (onVideoGenerated) {
-        onVideoGenerated(result.videoUrl, result.thumbnailUrl);
+        onVideoGenerated(data.videoUrl, data.thumbnailUrl);
       }
     } catch (err) {
       setError("Failed to generate video. Please try again.");
+      setGenerationState("failed");
       console.error("Video generation error:", err);
-    } finally {
-      setIsGenerating(false);
     }
   };
 
@@ -102,6 +155,12 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     setProgress(0);
     setIsVideoLoaded(false);
     setIsVideoPlaying(false);
+    setGenerationState("idle");
+    setJobId(null);
+    
+    if (statusCheckInterval.current) {
+      clearInterval(statusCheckInterval.current);
+    }
   };
 
   const handleVideoLoad = () => {
@@ -150,27 +209,48 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     };
   }, []);
 
+  // Status message based on generation state
+  const getStatusMessage = () => {
+    switch (generationState) {
+      case "generating":
+        return "Preparing to generate your video...";
+      case "processing":
+        return "AI is creating your video... This may take a few minutes.";
+      case "completed":
+        return "Video generated successfully!";
+      case "failed":
+        return "Generation failed. Please try again.";
+      default:
+        return "";
+    }
+  };
+
+  const isGenerating = generationState === "generating" || generationState === "processing";
+
   return (
     <div className="space-y-4">
       <div className="rounded-lg border bg-card p-4">
-        <h2 className="text-xl font-bold mb-4">Generate AI Video</h2>
+        <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+          <Wand2 className="h-5 w-5 text-purple-500" />
+          <span>Generate AI Video</span>
+        </h2>
         
         {/* Text prompt input */}
         <div className="mb-4">
           <label htmlFor="prompt" className="block mb-2 font-medium">
-            Describe your video
+            Describe your video in detail
           </label>
           <textarea
             id="prompt"
             rows={4}
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-            placeholder="A beautiful sunset over mountains with birds flying by..."
+            placeholder="A breathtaking aerial view of a futuristic city with flying cars..."
             value={prompt}
             onChange={handlePromptChange}
             disabled={isGenerating}
           />
           <p className="mt-1 text-xs text-muted-foreground">
-            Be specific and descriptive for best results. Include details about scenery, subjects, actions, and style.
+            Be specific and detailed. Include visual elements, style, actions, and mood. For better results, aim for 500-1000 characters.
           </p>
         </div>
 
@@ -190,6 +270,34 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
             ))}
           </div>
         </div>
+
+        {/* Settings for Vadoo */}
+        <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block mb-2 text-sm font-medium">Voice</label>
+            <select 
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              disabled={isGenerating}
+            >
+              <option value="Charlie">Charlie (Default)</option>
+              <option value="Emma">Emma</option>
+              <option value="Brian">Brian</option>
+              <option value="Olivia">Olivia</option>
+            </select>
+          </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium">Duration</label>
+            <select 
+              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              disabled={isGenerating}
+            >
+              <option value="5">5 seconds</option>
+              <option value="30-60">30-60 seconds</option>
+              <option value="60-90">60-90 seconds</option>
+              <option value="90-120">90-120 seconds</option>
+            </select>
+          </div>
+        </div>
         
         {/* Error message */}
         {error && (
@@ -203,7 +311,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
         {isGenerating && (
           <div className="mb-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium">Generating video...</span>
+              <span className="text-sm font-medium">{getStatusMessage()}</span>
               <span className="text-sm text-muted-foreground">{progress}%</span>
             </div>
             <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
@@ -213,8 +321,13 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground animate-pulse">
-              This may take a minute. AI is working its magic...
+              Vadoo AI is processing your request. This typically takes a few seconds.
             </p>
+            {jobId && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Job ID: {jobId}
+              </p>
+            )}
           </div>
         )}
         
@@ -287,14 +400,18 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
               )}
             </div>
             
-            <div className="flex justify-between">
-              <Button variant="outline" size="sm" onClick={handleDownload}>
+            <div className="flex flex-col sm:flex-row gap-3 justify-between">
+              <Button variant="outline" size="sm" onClick={handleDownload} className="flex-1">
                 <Download className="mr-2 h-4 w-4" />
                 <span>Download Video</span>
               </Button>
-              <Button variant="primary" size="sm">
-                <Sparkles className="mr-2 h-4 w-4" />
-                <span>Use This Video</span>
+              <Button variant="token" size="sm" className="flex-1">
+                <Coins className="mr-2 h-4 w-4" />
+                <span>Mint as NFT</span>
+              </Button>
+              <Button variant="primary" size="sm" className="flex-1">
+                <Video className="mr-2 h-4 w-4" />
+                <span>Publish to Feed</span>
               </Button>
             </div>
           </CardContent>
