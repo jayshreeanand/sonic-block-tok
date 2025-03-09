@@ -39,7 +39,15 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
   // Sets hasMounted to true once the component mounts in the browser
   useEffect(() => {
     setHasMounted(true);
-  }, []);
+    
+    // Auto-play the video when the component mounts if autoPlay is true
+    if (autoPlay && videoRef.current) {
+      videoRef.current.play().catch(error => {
+        console.error("Auto-play failed:", error);
+        setIsPlaying(false);
+      });
+    }
+  }, [autoPlay]);
 
   useEffect(() => {
     const videoElement = videoRef.current;

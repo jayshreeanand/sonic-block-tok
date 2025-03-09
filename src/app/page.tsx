@@ -13,13 +13,13 @@ export default function HomePage() {
   const router = useRouter();
   
   // Get a featured video for the hero section
-  const featuredVideo = videos[0];
+  const featuredVideo = videos.find(v => v.id === "3") || videos[0];
   
   // Filter videos by categories
-  const aiArtVideos = videos.filter(v => v.categories.includes("AI Art"));
-  const techVideos = videos.filter(v => v.categories.includes("Tech"));
-  const trendingVideos = [...videos].sort((a, b) => b.views - a.views).slice(0, 10);
-  const nftVideos = videos.filter(v => v.isNFT);
+  const aiArtVideos = videos.filter(v => v.categories.includes("AI Art")).slice(0, 6);
+  const techVideos = videos.filter(v => v.categories.includes("Tech")).slice(0, 6);
+  const trendingVideos = [...videos].sort((a, b) => b.views - a.views).slice(0, 6);
+  const nftVideos = videos.filter(v => v.isNFT).slice(0, 6);
 
   const navigateToCreate = () => {
     router.push('/create');
@@ -154,12 +154,20 @@ export default function HomePage() {
 
         {/* AI Art Videos */}
         <section className="container mx-auto">
-          <VideoFeed title="AI Art Creations" videos={aiArtVideos} />
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="h-6 w-6 text-purple-500" />
+            <h2 className="text-2xl font-bold">AI Art Creations</h2>
+          </div>
+          <VideoFeed videos={aiArtVideos} />
         </section>
 
         {/* Tech Videos */}
         <section className="container mx-auto">
-          <VideoFeed title="Tech & Innovation" videos={techVideos} />
+          <div className="flex items-center gap-2 mb-2">
+            <Zap className="h-6 w-6 text-blue-500" />
+            <h2 className="text-2xl font-bold">Tech & Innovation</h2>
+          </div>
+          <VideoFeed videos={techVideos} />
         </section>
 
         {/* NFT Videos */}
@@ -206,19 +214,19 @@ export default function HomePage() {
                       <span className="text-sm">3</span>
                     </div>
                     <span>Create and mint your own AI-generated videos as NFTs</span>
-          </li>
+                  </li>
                   <li className="flex items-start gap-2">
                     <div className="rounded-full bg-white/20 p-1 mt-1">
                       <span className="text-sm">4</span>
                     </div>
                     <span>Participate in campaigns and earn additional rewards</span>
-          </li>
+                  </li>
                 </ul>
               </div>
             </div>
-        </div>
+          </div>
         </section>
-    </div>
+      </div>
     </MainLayout>
   );
 }

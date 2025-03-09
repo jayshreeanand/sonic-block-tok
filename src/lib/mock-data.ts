@@ -1,5 +1,4 @@
 import { User, Video, Comment, Category, Notification, Campaign, TokenTransaction } from "./types";
-import { getRandomInt } from "./utils";
 
 // Mock users
 export const users: User[] = [
@@ -53,6 +52,70 @@ export const categories: Category[] = [
   { id: "8", name: "Comedy", icon: "smile" },
 ];
 
+// Sample real videos (Google sample videos)
+const realVideos = [
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
+    title: "Big Buck Bunny",
+    description: "Three rodents amuse themselves by harassing creatures of the forest. However, the fly can be a dangerous opponent when cornered."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
+    title: "Elephant's Dream",
+    description: "The first Blender Open Movie from 2006"
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
+    title: "For Bigger Blazes",
+    description: "HBO GO now works with Chromecast -- the easiest way to enjoy online video on your TV."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
+    title: "For Bigger Escapes",
+    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg",
+    title: "For Bigger Fun",
+    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerJoyrides.jpg",
+    title: "For Bigger Joyrides",
+    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerMeltdowns.jpg",
+    title: "For Bigger Meltdowns",
+    description: "Introducing Chromecast. The easiest way to enjoy online video and music on your TV."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
+    title: "Sintel",
+    description: "Sintel is an independently produced short film, initiated by the Blender Foundation."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/SubaruOutbackOnStreetAndDirt.jpg",
+    title: "Subaru Outback On Street And Dirt",
+    description: "Driving in the city and off-road with the Subaru Outback."
+  },
+  {
+    url: "https://storage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+    thumbnail: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
+    title: "Tears of Steel",
+    description: "Tears of Steel was realized with crowd-funding by users of the open source 3D creation tool Blender."
+  },
+];
+
 // Use fixed seeds for video IDs to avoid hydration errors
 const FIXED_SEEDS = {
   videoIds: [5, 12, 8, 19, 3, 10, 7, 15, 2, 11, 6, 14, 9, 4, 13, 17, 1],
@@ -63,15 +126,15 @@ const FIXED_SEEDS = {
   tokens: [2450, 1680, 2100, 3100, 980, 3800, 1450, 2680, 1250, 3400, 1950, 2800, 1350, 2250, 3200, 1750, 1050]
 };
 
-// Generate more videos with deterministic values
+// Generate more videos with deterministic values but real video URLs
 export const videos: Video[] = [
-  // First 3 are your original hand-crafted videos
+  // First 3 are high-quality videos with modified metadata
   {
     id: "1",
     title: "AI Generated Symphony",
-    description: "A beautiful symphony composed entirely by AI and visualized",
-    url: "/videos/video1.mp4",
-    thumbnail: "/thumbnails/thumbnail1.jpg",
+    description: "A beautiful symphony composed entirely by AI and visualized with stunning imagery.",
+    url: realVideos[0].url,
+    thumbnail: realVideos[0].thumbnail,
     creator: users[0],
     likes: 5621,
     comments: 421,
@@ -87,9 +150,9 @@ export const videos: Video[] = [
   {
     id: "2",
     title: "Future of Blockchain",
-    description: "Exploring how blockchain will transform digital ownership",
-    url: "/videos/video2.mp4",
-    thumbnail: "/thumbnails/thumbnail2.jpg",
+    description: "Exploring how blockchain will transform digital ownership and reinvent the creative economy.",
+    url: realVideos[1].url,
+    thumbnail: realVideos[1].thumbnail,
     creator: users[1],
     likes: 3210,
     comments: 287,
@@ -103,10 +166,10 @@ export const videos: Video[] = [
   },
   {
     id: "3",
-    title: "Digital Fashion Show",
-    description: "The first-ever fully AI-generated fashion collection",
-    url: "/videos/video3.mp4",
-    thumbnail: "/thumbnails/thumbnail3.jpg",
+    title: "Digital Fashion Collection",
+    description: "The first-ever fully AI-generated fashion collection showcasing the future of digital fashion.",
+    url: realVideos[2].url,
+    thumbnail: realVideos[2].thumbnail,
     creator: users[2],
     likes: 4890,
     comments: 356,
@@ -121,11 +184,12 @@ export const videos: Video[] = [
   },
 ];
 
-// Add the remaining 17 videos with deterministic values
-for (let i = 0; i < FIXED_SEEDS.videoIds.length; i++) {
+// Add the remaining videos with deterministic values but real video URLs
+for (let i = 0; i < 17; i++) {
   const videoId = (i + 4).toString(); // Start from 4 since we already have 3
   const seedIndex = i % FIXED_SEEDS.videoIds.length;
   const randomUserIndex = seedIndex % users.length;
+  const realVideoIndex = (i + 3) % realVideos.length; // Cycle through real videos
   
   // Assign 1-3 categories deterministically
   const categoryCount = (seedIndex % 3) + 1;
@@ -143,12 +207,16 @@ for (let i = 0; i < FIXED_SEEDS.videoIds.length; i++) {
   // Deterministic boolean based on seedIndex
   const isNFT = seedIndex % 3 === 0;
   
+  // AI-inspired titles and descriptions
+  const realVideo = realVideos[realVideoIndex];
+  const aiPrefix = seedIndex % 2 === 0 ? "AI-Generated" : "Neural Network";
+  
   videos.push({
     id: videoId,
-    title: `AI BlockTok Video ${videoId}`,
-    description: `This is an AI-generated video #${videoId}`,
-    url: `/videos/video${videoId}.mp4`,
-    thumbnail: `/thumbnails/thumbnail${videoId}.jpg`,
+    title: `${aiPrefix} ${realVideo.title}`,
+    description: `${realVideo.description} Created using the latest AI video generation technology.`,
+    url: realVideo.url,
+    thumbnail: realVideo.thumbnail,
     creator: users[randomUserIndex],
     likes: FIXED_SEEDS.likes[seedIndex],
     comments: Math.floor(FIXED_SEEDS.likes[seedIndex] / 10),
