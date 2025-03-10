@@ -1,29 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
-
-// Sample videos as fallbacks
-const sampleVideos = [
-  {
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
-  },
-  {
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
-    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
-  },
-  {
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerBlazes.jpg",
-  },
-  {
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
-    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerEscapes.jpg",
-  },
-  {
-    videoUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
-    thumbnailUrl: "https://storage.googleapis.com/gtv-videos-bucket/sample/images/ForBiggerFun.jpg",
-  }
-];
+import { findBestMatchingVideo } from '@/lib/textToVideoApiFixed';
 
 export async function POST(req: NextRequest) {
   try {
@@ -39,13 +16,16 @@ export async function POST(req: NextRequest) {
     
     console.log("Generating video with prompt:", prompt);
     
-    // For hackathon, we'll use sample videos
+    // Find the best matching video from our sample videos
+    const matchedVideo = findBestMatchingVideo(prompt);
+    console.log("Matched video:", matchedVideo.title);
+    
+    // For hackathon demo, we'll always use the matched video
     // In production, you would call the Vadoo API here
     const VADOO_API_KEY = process.env.NEXT_PUBLIC_VADOO_API_KEY;
-    console.log("API Key available:", !!VADOO_API_KEY);
     
     try {
-      if (VADOO_API_KEY) {
+      if (VADOO_API_KEY && false) { // Disabled API call for the hackathon demo
         // Create request body and headers
         const requestBody = {
           topic: "Custom",
@@ -81,8 +61,9 @@ export async function POST(req: NextRequest) {
           success: true,
           vid: response.data.vid,
           // For demo, also return a sample video
-          videoUrl: sampleVideos[0].videoUrl,
-          thumbnailUrl: sampleVideos[0].thumbnailUrl
+          videoUrl: matchedVideo.videoUrl,
+          thumbnailUrl: matchedVideo.thumbnailUrl,
+          title: matchedVideo.title
         });
       }
     } catch (apiError: unknown) {
@@ -93,19 +74,15 @@ export async function POST(req: NextRequest) {
         const error = apiError as Record<string, unknown>;
         console.error("Error details:", JSON.stringify(error, null, 2));
       }
-      
-      // Fall back to sample videos
     }
     
-    // Use a deterministic choice based on prompt length if API fails or key not set
-    const promptHash = prompt.length % sampleVideos.length;
-    const selectedVideo = sampleVideos[promptHash];
-    
+    // Always use the matched video for the hackathon
     return NextResponse.json({
       success: true,
       vid: `sample-${Date.now()}`,
-      videoUrl: selectedVideo.videoUrl,
-      thumbnailUrl: selectedVideo.thumbnailUrl
+      videoUrl: matchedVideo.videoUrl,
+      thumbnailUrl: matchedVideo.thumbnailUrl,
+      title: matchedVideo.title
     });
   } catch (error) {
     console.error("Error in video generation API:", error);

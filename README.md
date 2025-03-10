@@ -7,19 +7,19 @@
 
 BlockTok AI is an AI-powered short-form video generation platform on the Injective blockchain that revolutionizes user engagement by tokenizing attention. Users earn rewards for watching, sharing, and interacting with AI-generated content, while creators can monetize their content through onchain ad revenue, NFTs, and decentralized marketing campaigns.
 
-## Features
+## 🚀 Features
 
 - **AI Video Generation**: Create AI-generated short-form videos with customizable options
   - **Text-to-Video**: Generate videos from text descriptions using Vadoo AI
   - **Style Presets**: Apply different artistic styles to generated videos
   - **Video Templates**: Use pre-made templates for quick creation
-- **Token Rewards**: Earn BTOK tokens for watching, sharing, and interacting with content
+- **Token Rewards**: Earn INJ tokens for watching, sharing, and interacting with content
 - **NFT Marketplace**: Mint videos as NFTs on the Injective blockchain
 - **Creator Economy**: Monetize content through various revenue streams
 - **Campaign Marketplace**: Create marketing campaigns to promote content
 - **Wallet Integration**: Connect your Injective wallet to manage tokens and NFTs
 
-## Application Flow
+## 🔄 Application Flow
 
 ```mermaid
 graph TD
@@ -114,7 +114,7 @@ src/
 
    - User browses video feed
    - Watches videos
-   - Earns BTOK tokens for engagement
+   - Earns INJ tokens for engagement
    - Tokens are sent to connected wallet
 
 3. **NFT Marketplace**:
@@ -123,12 +123,12 @@ src/
    - Buyers purchase with Injective tokens
    - Ownership transfers on blockchain
 
-## Tokenomics
+## 💰 Tokenomics
 
-- **BTOK Token**: Native utility token on Injective blockchain
+- **INJ Token**: Native utility token on Injective blockchain
 - **Earning Mechanisms**:
-  - Watching videos (5 BTOK per minute)
-  - Creating content (100 BTOK per published video)
+  - Watching videos (0.01 INJ per minute)
+  - Creating content (0.2 INJ per published video)
   - Community engagement (voting, commenting)
 - **Spending Use Cases**:
   - Premium video generation features

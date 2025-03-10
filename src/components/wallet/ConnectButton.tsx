@@ -76,7 +76,7 @@ export function ConnectButton({
           className={`${className} border-green-500/20 text-green-700 hover:border-green-500/30 hover:bg-green-500/10`}
         >
           <Wallet className="mr-2 h-4 w-4 text-green-600" />
-          <span className="mr-2">{formatBalance(wallet.balance)} BTOK</span>
+          <span className="mr-2">{formatBalance(wallet.balance)} INJ</span>
           <span className="text-xs text-muted-foreground">{formatAddress(wallet.address)}</span>
         </Button>
       </DropdownMenuTrigger>

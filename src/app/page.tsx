@@ -226,7 +226,7 @@ export default function HomePage() {
             <div>
               <h2 className="text-3xl font-bold mb-4">Start Earning Today</h2>
               <p className="mb-6">
-                Connect your wallet and start earning tokens for watching videos, creating content, and participating in the BlockTok ecosystem.
+                Connect your wallet and start earning INJ tokens for watching videos, creating content, and participating in the BlockTok ecosystem.
               </p>
               <ConnectButton variant="default" size="lg" className="bg-white text-purple-600 hover:bg-gray-100" />
             </div>
@@ -244,7 +244,7 @@ export default function HomePage() {
                     <div className="rounded-full bg-white/20 p-1 mt-1">
                       <span className="text-sm">2</span>
                     </div>
-                    <span>Watch AI-generated videos to earn BTOK tokens</span>
+                    <span>Watch AI-generated videos to earn INJ tokens</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="rounded-full bg-white/20 p-1 mt-1">

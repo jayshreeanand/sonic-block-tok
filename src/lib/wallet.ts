@@ -22,7 +22,7 @@ export function useWallet() {
       
       // Mock successful connection
       const mockAddress = "inj1qr8ysyyjahm75ks9f0hk0lvlp3zxhy4tv0t0qj";
-      const mockBalance = 150;
+      const mockBalance = 2.5; // INJ tokens
       
       setWallet({
         connected: true,

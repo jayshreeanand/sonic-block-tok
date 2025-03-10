@@ -33,7 +33,7 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
   const [hasMounted, setHasMounted] = useState(false);
   
   // Simulated token earning rate (tokens per second)
-  const tokenRate = 0.5;
+  const tokenRate = 0.001; // 0.001 INJ per second = about 0.06 INJ per minute
   const tokenInterval = useRef<NodeJS.Timeout | null>(null);
 
   // Sets hasMounted to true once the component mounts in the browser
@@ -153,7 +153,7 @@ export function VideoPlayer({ video, autoPlay = false }: VideoPlayerProps) {
       {isPlaying && hasMounted && (
         <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/70 rounded-full py-1 px-3 text-white">
           <Coins className="h-4 w-4 text-amber-400" />
-          <span className="text-amber-400 font-medium">+{earnedTokens.toFixed(1)}</span>
+          <span className="text-amber-400 font-medium">+{earnedTokens.toFixed(4)} INJ</span>
         </div>
       )}
       

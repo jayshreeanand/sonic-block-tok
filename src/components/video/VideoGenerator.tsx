@@ -31,6 +31,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
   const [progress, setProgress] = useState(0);
   const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
   const [generatedThumbnailUrl, setGeneratedThumbnailUrl] = useState<string | null>(null);
+  const [matchedVideoTitle, setMatchedVideoTitle] = useState<string | null>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [jobId, setJobId] = useState<string | null>(null);
@@ -136,6 +137,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
       // Update state with generated video
       setGeneratedVideoUrl(data.videoUrl);
       setGeneratedThumbnailUrl(data.thumbnailUrl);
+      setMatchedVideoTitle(data.title || null);
 
       // Notify parent component if callback is provided
       if (onVideoGenerated) {
@@ -151,6 +153,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
   const handleTryAgain = () => {
     setGeneratedVideoUrl(null);
     setGeneratedThumbnailUrl(null);
+    setMatchedVideoTitle(null);
     setError(null);
     setProgress(0);
     setIsVideoLoaded(false);
@@ -373,6 +376,12 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
               <h3 className="font-medium">Video Generated Successfully!</h3>
             </div>
             
+            {matchedVideoTitle && (
+              <div className="mb-2 text-lg font-semibold text-center">
+                {matchedVideoTitle}
+              </div>
+            )}
+            
             <div className="rounded-lg overflow-hidden bg-black aspect-video mb-4 relative">
               <video
                 ref={videoRef}
@@ -407,7 +416,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
               </Button>
               <Button variant="token" size="sm" className="flex-1">
                 <Coins className="mr-2 h-4 w-4" />
-                <span>Mint as NFT</span>
+                <span>Mint as NFT (0.2 INJ)</span>
               </Button>
               <Button variant="primary" size="sm" className="flex-1">
                 <Video className="mr-2 h-4 w-4" />
