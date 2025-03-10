@@ -7,13 +7,14 @@ import { videos, categories } from "@/lib/mock-data";
 import { Search, Sliders } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function DiscoverPage({
-  searchParams,
-}: {
-  searchParams: { category?: string; q?: string };
-}) {
+interface PageProps {
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default function DiscoverPage({ searchParams }: PageProps) {
   const router = useRouter();
-  const { category, q } = searchParams;
+  const category = searchParams.category as string | undefined;
+  const q = searchParams.q as string | undefined;
 
   // Filter videos by category if specified
   let filteredVideos = videos;
