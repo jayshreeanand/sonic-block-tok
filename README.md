@@ -1,8 +1,13 @@
 # BlockTok AI
 
+<div align="center">
+  <img src="public/blocktok-logo.svg" alt="BlockTok AI Logo" width="200" height="200" />
+  <h3>AI-Generated Videos on the Injective Blockchain</h3>
+</div>
+
 BlockTok AI is an AI-powered short-form video generation platform on the Injective blockchain that revolutionizes user engagement by tokenizing attention. Users earn rewards for watching, sharing, and interacting with AI-generated content, while creators can monetize their content through onchain ad revenue, NFTs, and decentralized marketing campaigns.
 
-## 🚀 Features
+## Features
 
 - **AI Video Generation**: Create AI-generated short-form videos with customizable options
   - **Text-to-Video**: Generate videos from text descriptions using Vadoo AI
@@ -14,43 +19,64 @@ BlockTok AI is an AI-powered short-form video generation platform on the Injecti
 - **Campaign Marketplace**: Create marketing campaigns to promote content
 - **Wallet Integration**: Connect your Injective wallet to manage tokens and NFTs
 
-## 🔧 Technology Stack
+## Application Flow
 
-- **Frontend**: Next.js, React, TypeScript, TailwindCSS
+```mermaid
+graph TD
+    A[User] -->|Connects Wallet| B[Authentication]
+    A -->|Enters Text Prompt| C[Video Generation]
+    C -->|Uses Vadoo API| D[AI Processing]
+    D -->|Returns Video| E[Generated Video]
+    E -->|User Action| F{Decision}
+    F -->|Download| G[Local Storage]
+    F -->|Mint as NFT| H[Blockchain]
+    F -->|Publish| I[Content Feed]
+    A -->|Watches Videos| J[Content Consumption]
+    J -->|Engagement| K[Token Rewards]
+    K -->|Transferred to| L[User Wallet]
+    H -->|Listed in| M[NFT Marketplace]
+    A -->|Creates| N[Marketing Campaign]
+    N -->|Promotes| I
+    I -->|Viewed by| A
+```
+
+## Technology Stack
+
+- **Frontend**: Next.js 15, React, TypeScript, TailwindCSS
 - **Blockchain**: Injective Protocol, Injective SDK
-- **AI**: Integration with AI video generation models
+- **AI Integration**:
   - Vadoo AI API for text-to-video generation
-  - Support for custom style presets and video templates
-- **Authentication**: Wallet authentication
+  - Custom parameter configuration for high-quality results
+- **Authentication**: Wallet-based authentication with Injective
+- **Styling**: TailwindCSS with custom components
 
-## 🎬 AI Video Generation
+## AI Video Generation Process
 
-BlockTok AI uses the Vadoo AI API to generate high-quality videos from text prompts. The platform allows creators to:
+1. **Input**: User provides a text prompt describing the desired video
+2. **Processing**: The prompt is sent to Vadoo AI with customized parameters
+3. **Generation**: AI generates the video based on the prompt
+4. **Delivery**: The completed video is delivered to the user
+5. **Actions**: User can download, mint as NFT, or publish to the feed
 
-1. Write detailed prompts describing the desired video
-2. Select voice, duration, and style preferences
-3. Generate professional-looking videos in minutes
-4. Mint these videos as NFTs or publish them to the feed
-
-To use the video generation feature:
-
-- Navigate to the Create page
-- Enter a detailed description of your desired video
-- Choose your preferred settings
-- Click "Generate Video"
-- Once completed, you can download, mint as NFT, or publish directly
-
-## 🔒 API Keys
+## 🔒 Environment Setup
 
 To use the video generation feature, you need to set up the following environment variables:
 
 ```
-VADOO_API_KEY=your_vadoo_api_key_here
+NEXT_PUBLIC_VADOO_API_KEY=your_vadoo_api_key_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 You can add these to a `.env.local` file in the root of the project.
 
-## 🏗️ Project Structure
+## Project Architecture
+
+The project follows a modern Next.js architecture with:
+
+- App Router for routing
+- Server Components for improved performance
+- Server Actions for backend functionality
+- Client Components for interactive elements
 
 ```
 src/
@@ -61,41 +87,55 @@ src/
 ├── components/          # React components
 │   ├── layout/          # Layout components
 │   ├── ui/              # UI components
-│   └── video/           # Video-related components
+│   ├── video/           # Video-related components
+│   └── wallet/          # Wallet integration components
+├── contexts/            # React contexts for state management
+│   └── WalletContext.tsx # Wallet connection state
 ├── lib/                 # Utility functions and types
 │   ├── mock-data.ts     # Mock data for development
 │   ├── textToVideoApi.ts # Vadoo API integration
 │   ├── types.ts         # TypeScript type definitions
-│   └── utils.ts         # Utility functions
+│   ├── utils.ts         # Utility functions
+│   └── wallet.ts        # Wallet integration utilities
 └── public/              # Static assets
 ```
 
-## 📋 Key Pages
+## Key User Flows
 
-- **Home**: Featured videos and content discovery
-- **Discover**: Explore videos by category
-- **Video Details**: Watch videos and earn tokens
-- **Create**: Generate AI videos
-- **Profile**: User profiles and stats
-- **Wallet**: Manage BTOK tokens and transactions
+1. **Content Creation**:
 
-## 🧠 Tokenomics
+   - User connects wallet
+   - Navigates to Create page
+   - Enters text prompt and selects parameters
+   - AI generates video
+   - User publishes or mints as NFT
 
-- **BTOK Token**: Native utility token on the Injective blockchain
-- **Earning Mechanisms**: Watch videos, create content, engage with community
-- **Spending Mechanisms**: Create AI videos, purchase NFTs, launch campaigns
+2. **Content Consumption**:
 
-## 📱 Mobile-First Design
+   - User browses video feed
+   - Watches videos
+   - Earns BTOK tokens for engagement
+   - Tokens are sent to connected wallet
 
-BlockTok AI features a responsive, mobile-first design to ensure optimal user experience across all devices, similar to popular short-form video platforms.
+3. **NFT Marketplace**:
+   - Creator mints video as NFT
+   - NFT is listed in marketplace
+   - Buyers purchase with Injective tokens
+   - Ownership transfers on blockchain
 
-## 🔒 Security
+## Tokenomics
 
-- Secure wallet connections
-- On-chain transactions for transparency
-- NFT ownership verification
+- **BTOK Token**: Native utility token on Injective blockchain
+- **Earning Mechanisms**:
+  - Watching videos (5 BTOK per minute)
+  - Creating content (100 BTOK per published video)
+  - Community engagement (voting, commenting)
+- **Spending Use Cases**:
+  - Premium video generation features
+  - NFT purchases
+  - Campaign creation
 
-## 🚀 Getting Started
+## Getting Started
 
 1. Clone the repository:
 
@@ -113,7 +153,8 @@ npm install
 3. Create a `.env.local` file with your API keys:
 
 ```
-VADOO_API_KEY=your_vadoo_api_key_here
+NEXT_PUBLIC_VADOO_API_KEY=your_vadoo_api_key_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 4. Start the development server:
@@ -124,10 +165,39 @@ npm run dev
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🌐 Deployment
+## 🔧 Troubleshooting
 
-The app can be deployed to various platforms like Vercel, Netlify, or traditional hosting.
+If you encounter Node.js dependency issues on macOS (e.g., missing libraries like `libicui18n.67.dylib`), you can use our helper script:
 
-## 📄 License
+```bash
+chmod +x run-dev.sh
+./run-dev.sh
+```
+
+This script will install nvm, set up the correct Node.js version, and run the development server.
+
+## Deployment
+
+The app is optimized for deployment on Vercel, but can be deployed to any platform that supports Next.js applications.
+
+## Future Roadmap
+
+- **Enhanced AI Models**: Integration with more advanced video generation models
+- **Real-time Collaboration**: Allow multiple creators to collaborate on videos
+- **Advanced Analytics**: Detailed insights for creators about audience engagement
+- **Multi-chain Support**: Expand beyond Injective to other EVM-compatible chains
+- **Mobile Apps**: Native mobile applications for iOS and Android
+
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Acknowledgements
+
+- [Injective Protocol](https://injective.com/) for blockchain infrastructure
+- [Vadoo AI](https://vadoo.ai/) for video generation capabilities
+- [Mixkit](https://mixkit.co/) for sample videos used in demonstration

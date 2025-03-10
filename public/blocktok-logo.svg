@@ -1,0 +1,46 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#3B82F6" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Rounded background -->
+  <rect width="200" height="200" rx="40" fill="url(#bg-gradient)" />
+  
+  <!-- Blockchain grid pattern -->
+  <g fill="white" opacity="0.1">
+    <circle cx="50" cy="50" r="8" />
+    <circle cx="100" cy="50" r="8" />
+    <circle cx="150" cy="50" r="8" />
+    <circle cx="50" cy="100" r="8" />
+    <circle cx="100" cy="100" r="8" />
+    <circle cx="150" cy="100" r="8" />
+    <circle cx="50" cy="150" r="8" />
+    <circle cx="100" cy="150" r="8" />
+    <circle cx="150" cy="150" r="8" />
+    <line x1="50" y1="50" x2="100" y2="50" stroke="white" stroke-width="3" />
+    <line x1="100" y1="50" x2="150" y2="50" stroke="white" stroke-width="3" />
+    <line x1="50" y1="50" x2="50" y2="100" stroke="white" stroke-width="3" />
+    <line x1="100" y1="50" x2="100" y2="100" stroke="white" stroke-width="3" />
+    <line x1="150" y1="50" x2="150" y2="100" stroke="white" stroke-width="3" />
+    <line x1="50" y1="100" x2="100" y2="100" stroke="white" stroke-width="3" />
+    <line x1="100" y1="100" x2="150" y2="100" stroke="white" stroke-width="3" />
+    <line x1="50" y1="100" x2="50" y2="150" stroke="white" stroke-width="3" />
+    <line x1="100" y1="100" x2="100" y2="150" stroke="white" stroke-width="3" />
+    <line x1="150" y1="100" x2="150" y2="150" stroke="white" stroke-width="3" />
+    <line x1="50" y1="150" x2="100" y2="150" stroke="white" stroke-width="3" />
+    <line x1="100" y1="150" x2="150" y2="150" stroke="white" stroke-width="3" />
+  </g>
+  
+  <!-- Main "B" letter -->
+  <text x="100" y="120" font-family="Arial, sans-serif" font-weight="bold" font-size="100" text-anchor="middle" fill="white">B</text>
+  
+  <!-- Sparkle effect -->
+  <g fill="white">
+    <circle cx="140" cy="70" r="6" />
+    <polygon points="140,55 143,65 153,65 145,70 148,80 140,75 132,80 135,70 127,65 137,65" fill="white" />
+  </g>
+</svg> 
