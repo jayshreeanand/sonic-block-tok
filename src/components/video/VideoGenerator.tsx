@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Sparkles, AlertCircle, Check, Loader2, PlayCircle, Download, Video, Wand2, Coins } from "lucide-react";
 
-// Prompt suggestions focused on visual content that Vadoo can generate well
+// Update prompt suggestions to be more suitable for Vadoo AI
 const PROMPT_SUGGESTIONS = [
-  "A breathtaking aerial view of a futuristic city at sunset with flying cars",
-  "A slow-motion cinematic shot of ocean waves crashing on a tropical beach",
-  "A timelapse of a bustling city transitioning from day to night",
-  "A 3D animation of cryptocurrency coins and blockchain networks visualized",
-  "Documentary-style footage of AI robots working alongside humans",
+  "A modern tech company office with employees collaborating in a bright, open space",
+  "A sleek electric car driving through a futuristic city at night with neon lights",
+  "A professional business meeting with diverse team members presenting data on screens",
+  "A fitness enthusiast working out in a modern gym with high-tech equipment",
+  "A chef preparing gourmet dishes in a contemporary kitchen with modern appliances"
 ];
 
 // Default prompt to avoid hydration issues
@@ -118,7 +118,8 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
       });
       
       if (!response.ok) {
-        throw new Error('Failed to generate video');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate video');
       }
       
       const data = await response.json();
@@ -131,20 +132,20 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
       setGenerationState("processing");
       setJobId(data.vid);
       
-      // Start simulating progress for the demo
+      // Start progress simulation
       simulateJobProgress();
 
       // Update state with generated video
       setGeneratedVideoUrl(data.videoUrl);
       setGeneratedThumbnailUrl(data.thumbnailUrl);
-      setMatchedVideoTitle(data.title || null);
+      setMatchedVideoTitle(data.title || prompt);
 
       // Notify parent component if callback is provided
       if (onVideoGenerated) {
         onVideoGenerated(data.videoUrl, data.thumbnailUrl);
       }
     } catch (err) {
-      setError("Failed to generate video. Please try again.");
+      setError(err instanceof Error ? err.message : "Failed to generate video. Please try again.");
       setGenerationState("failed");
       console.error("Video generation error:", err);
     }
