@@ -1,10 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
+// Define available themes
+const AVAILABLE_THEMES = [
+  "None",
+  "3d model",
+  "analog film",
+  "anime",
+  "cartoon",
+  "cinematic",
+  "comic book",
+  "craft clay",
+  "digital art",
+  "fantasy art",
+  "isometric",
+  "line art",
+  "low poly",
+  "neon punk",
+  "origami",
+  "photographic",
+  "pixel art",
+  "playground",
+  "texture",
+  "watercolor"
+];
+
 export async function POST(req: NextRequest) {
   try {
-    // Get the prompt from the request body
-    const { prompt } = await req.json();
+    // Get the prompt and theme from the request body
+    const { prompt, theme = "None" } = await req.json();
     
     if (!prompt) {
       return NextResponse.json(
@@ -12,8 +36,15 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
+    if (!AVAILABLE_THEMES.includes(theme)) {
+      return NextResponse.json(
+        { error: 'Invalid theme selected' },
+        { status: 400 }
+      );
+    }
     
-    console.log("Generating video with prompt:", prompt);
+    console.log("Generating video with prompt:", prompt, "theme:", theme);
     
     const VADOO_API_KEY = process.env.NEXT_PUBLIC_VADOO_API_KEY;
     
@@ -28,7 +59,8 @@ export async function POST(req: NextRequest) {
     const requestBody = {
       topic: "Custom",
       prompt: prompt,
-      custom_instruction: "Create a high-quality, engaging short video with smooth transitions and professional visuals."
+      custom_instruction: `Create a high-quality, engaging short video with smooth transitions and professional visuals. Style: ${theme === "None" ? "default" : theme}.`,
+      style: theme === "None" ? undefined : theme
     };
     
     const headers = {
@@ -103,7 +135,8 @@ export async function POST(req: NextRequest) {
       vid: response.data.vid,
       videoUrl,
       thumbnailUrl: videoUrl?.replace('.mp4', '.jpg'), // Generate thumbnail URL from video URL
-      title: prompt
+      title: prompt,
+      theme
     });
     
   } catch (error) {

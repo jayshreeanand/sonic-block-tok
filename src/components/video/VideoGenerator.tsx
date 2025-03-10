@@ -3,39 +3,57 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, AlertCircle, Check, Loader2, PlayCircle, Download, Video, Wand2, Coins } from "lucide-react";
+import { Sparkles, AlertCircle, Check, Loader2, Wand2, Coins } from "lucide-react";
 
-// Update prompt suggestions to be more suitable for Vadoo AI
-const PROMPT_SUGGESTIONS = [
-  "A modern tech company office with employees collaborating in a bright, open space",
-  "A sleek electric car driving through a futuristic city at night with neon lights",
-  "A professional business meeting with diverse team members presenting data on screens",
-  "A fitness enthusiast working out in a modern gym with high-tech equipment",
-  "A chef preparing gourmet dishes in a contemporary kitchen with modern appliances"
+// Add demo videos data
+const DEMO_VIDEOS = [
+  {
+    title: "Life of street artist",
+    url: "https://res.cloudinary.com/dlgztvq9v/video/upload/v1742413050/block-tok-videos/life-of-street-artist_wvxhnd.mp4",
+    thumbnail: "https://res.cloudinary.com/dlgztvq9v/video/upload/v1742413050/block-tok-videos/life-of-street-artist_wvxhnd.jpg"
+  },
+  {
+    title: "Engaging story of team work",
+    url: "https://res.cloudinary.com/dlgztvq9v/video/upload/v1742413071/block-tok-videos/engaging-story-teamwork_ckhtp0.mp4",
+    thumbnail: "https://res.cloudinary.com/dlgztvq9v/video/upload/v1742413071/block-tok-videos/engaging-story-teamwork_ckhtp0.jpg"
+  },
+  {
+    title: "Gym of the future",
+    url: "https://res.cloudinary.com/dlgztvq9v/video/upload/v1742413048/block-tok-videos/gym-of-future_iz0wwh.mp4",
+    thumbnail: "https://res.cloudinary.com/dlgztvq9v/video/upload/v1742413048/block-tok-videos/gym-of-future_iz0wwh.jpg"
+  }
 ];
 
 // Default prompt to avoid hydration issues
-const DEFAULT_PROMPT = PROMPT_SUGGESTIONS[0];
+const DEFAULT_PROMPT = DEMO_VIDEOS[0].title;
 
 // Generation states
 type GenerationState = "idle" | "generating" | "processing" | "completed" | "failed";
 
 interface VideoGeneratorProps {
-  onVideoGenerated?: (videoUrl: string, thumbnailUrl: string) => void;
+  onVideoGenerated: (data: {
+    vid: string;
+    videoUrl: string;
+    thumbnailUrl: string;
+    title: string;
+    theme: string;
+  }) => void;
 }
 
 export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
   const [prompt, setPrompt] = useState(DEFAULT_PROMPT);
   const [generationState, setGenerationState] = useState<GenerationState>("idle");
-  const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
-  const [generatedVideoUrl, setGeneratedVideoUrl] = useState<string | null>(null);
-  const [generatedThumbnailUrl, setGeneratedThumbnailUrl] = useState<string | null>(null);
-  const [matchedVideoTitle, setMatchedVideoTitle] = useState<string | null>(null);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [jobId, setJobId] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const [selectedDemoVideo, setSelectedDemoVideo] = useState<typeof DEMO_VIDEOS[0] | null>(null);
+  const [generatedVideo, setGeneratedVideo] = useState<{
+    vid: string;
+    videoUrl: string;
+    thumbnailUrl: string;
+    title: string;
+    theme: string;
+  } | null>(null);
   const [hasMounted, setHasMounted] = useState(false);
   const statusCheckInterval = useRef<NodeJS.Timeout | null>(null);
 
@@ -44,11 +62,12 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     setHasMounted(true);
   }, []);
 
-  // Use a random suggestion, but only after mounting on client
+  // Use a random demo video, but only after mounting on client
   useEffect(() => {
     if (hasMounted) {
-      const randomIndex = Math.floor(Math.random() * PROMPT_SUGGESTIONS.length);
-      setPrompt(PROMPT_SUGGESTIONS[randomIndex]);
+      const randomIndex = Math.floor(Math.random() * DEMO_VIDEOS.length);
+      setSelectedDemoVideo(DEMO_VIDEOS[randomIndex]);
+      setPrompt(DEMO_VIDEOS[randomIndex].title);
     }
   }, [hasMounted]);
 
@@ -61,157 +80,61 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
     };
   }, []);
 
-  // Function to simulate job progress (for demo purposes)
-  const simulateJobProgress = () => {
-    let currentProgress = 10;
-    
-    if (statusCheckInterval.current) {
-      clearInterval(statusCheckInterval.current);
-    }
-    
-    statusCheckInterval.current = setInterval(() => {
-      if (currentProgress >= 100) {
-        clearInterval(statusCheckInterval.current!);
-        setGenerationState("completed");
-        setProgress(100);
-        return;
-      }
-      
-      // Increase progress by random amount
-      const increment = Math.floor(Math.random() * 15) + 5;
-      currentProgress = Math.min(currentProgress + increment, 100);
-      setProgress(currentProgress);
-      
-      if (currentProgress >= 100) {
-        clearInterval(statusCheckInterval.current!);
-        setGenerationState("completed");
-      }
-    }, 800); // Update every 800ms for a nice progression
-  };
-
-  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPrompt(e.target.value);
-  };
-
   const handleGenerate = async () => {
-    if (!prompt.trim()) {
-      setError("Please enter a prompt for the video generation");
-      return;
-    }
-
     try {
       setError(null);
       setProgress(0);
-      setIsVideoLoaded(false);
-      setIsVideoPlaying(false);
-      setJobId(null);
       setGenerationState("generating");
-      setProgress(10);
 
-      // Call our API endpoint
-      const response = await fetch('/api/generate-video', {
-        method: 'POST',
+      // If a demo video is selected, use it instead of calling the API
+      if (selectedDemoVideo) {
+        setProgress(100);
+        setGenerationState("completed");
+        
+        // Simulate a small delay to show the progress
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const videoData = {
+          vid: "demo-" + Date.now(),
+          videoUrl: selectedDemoVideo.url,
+          thumbnailUrl: selectedDemoVideo.thumbnail,
+          title: selectedDemoVideo.title,
+          theme: "None"
+        };
+        
+        setGeneratedVideo(videoData);
+        onVideoGenerated(videoData);
+        return;
+      }
+
+      // For custom prompts, continue with the API call
+      const response = await fetch("/api/generate-video", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ prompt }),
       });
-      
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to generate video');
+        throw new Error("Failed to generate video");
       }
-      
+
       const data = await response.json();
-      
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to generate video');
-      }
-      
-      // Set state to processing
-      setGenerationState("processing");
-      setJobId(data.vid);
-      
-      // Start progress simulation
-      simulateJobProgress();
-
-      // Update state with generated video
-      setGeneratedVideoUrl(data.videoUrl);
-      setGeneratedThumbnailUrl(data.thumbnailUrl);
-      setMatchedVideoTitle(data.title || prompt);
-
-      // Notify parent component if callback is provided
-      if (onVideoGenerated) {
-        onVideoGenerated(data.videoUrl, data.thumbnailUrl);
-      }
+      setGeneratedVideo(data);
+      onVideoGenerated(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate video. Please try again.");
       setGenerationState("failed");
-      console.error("Video generation error:", err);
     }
   };
 
   const handleTryAgain = () => {
-    setGeneratedVideoUrl(null);
-    setGeneratedThumbnailUrl(null);
-    setMatchedVideoTitle(null);
-    setError(null);
-    setProgress(0);
-    setIsVideoLoaded(false);
-    setIsVideoPlaying(false);
     setGenerationState("idle");
     setJobId(null);
-    
-    if (statusCheckInterval.current) {
-      clearInterval(statusCheckInterval.current);
-    }
+    setGeneratedVideo(null);
+    setSelectedDemoVideo(null);
   };
-
-  const handleVideoLoad = () => {
-    setIsVideoLoaded(true);
-  };
-
-  const handleDownload = () => {
-    if (generatedVideoUrl) {
-      const a = document.createElement('a');
-      a.href = generatedVideoUrl;
-      a.download = `blocktok-ai-video-${Date.now()}.mp4`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  };
-
-  const toggleVideoPlay = () => {
-    if (videoRef.current) {
-      if (isVideoPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsVideoPlaying(!isVideoPlaying);
-    }
-  };
-
-  // Handle video events
-  useEffect(() => {
-    const videoElement = videoRef.current;
-    if (!videoElement) return;
-
-    const handlePlay = () => setIsVideoPlaying(true);
-    const handlePause = () => setIsVideoPlaying(false);
-    const handleEnded = () => setIsVideoPlaying(false);
-
-    videoElement.addEventListener('play', handlePlay);
-    videoElement.addEventListener('pause', handlePause);
-    videoElement.addEventListener('ended', handleEnded);
-
-    return () => {
-      videoElement.removeEventListener('play', handlePlay);
-      videoElement.removeEventListener('pause', handlePause);
-      videoElement.removeEventListener('ended', handleEnded);
-    };
-  }, []);
 
   // Status message based on generation state
   const getStatusMessage = () => {
@@ -238,11 +161,11 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
           <Wand2 className="h-5 w-5 text-purple-500" />
           <span>Generate AI Video</span>
         </h2>
-        
+
         {/* Text prompt input */}
         <div className="mb-4">
           <label htmlFor="prompt" className="block mb-2 font-medium">
-            Describe your video in detail
+            Describe your video
           </label>
           <textarea
             id="prompt"
@@ -250,7 +173,10 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
             className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             placeholder="A breathtaking aerial view of a futuristic city with flying cars..."
             value={prompt}
-            onChange={handlePromptChange}
+            onChange={(e) => {
+              setPrompt(e.target.value);
+              setSelectedDemoVideo(null); // Clear demo video selection when user types
+            }}
             disabled={isGenerating}
           />
           <p className="mt-1 text-xs text-muted-foreground">
@@ -258,49 +184,43 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
           </p>
         </div>
 
-        {/* Prompt Suggestions */}
+        {/* Quick Select Demo Videos */}
         <div className="mb-4">
-          <p className="text-sm font-medium mb-2">Try these prompts:</p>
-          <div className="flex flex-wrap gap-2">
-            {PROMPT_SUGGESTIONS.map((suggestion, index) => (
+          <p className="text-sm font-medium mb-2">Try these videos:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {DEMO_VIDEOS.map((video) => (
               <button
-                key={index}
-                onClick={() => setPrompt(suggestion)}
-                className="text-xs px-2 py-1 bg-accent/50 rounded-full hover:bg-accent transition-colors"
+                key={video.title}
+                onClick={() => {
+                  setSelectedDemoVideo(video);
+                  setPrompt(video.title);
+                }}
+                className={`p-3 rounded-lg border text-left transition-colors ${
+                  selectedDemoVideo?.title === video.title
+                    ? 'border-primary bg-primary/5'
+                    : 'border-input hover:bg-accent/50'
+                }`}
                 disabled={isGenerating}
               >
-                {suggestion.length > 30 ? suggestion.substring(0, 30) + '...' : suggestion}
+                <h3 className="font-medium text-sm">{video.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1">Click to use this prompt</p>
               </button>
             ))}
           </div>
         </div>
 
         {/* Settings for Vadoo */}
-        <div className="mb-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block mb-2 text-sm font-medium">Voice</label>
-            <select 
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              disabled={isGenerating}
-            >
-              <option value="Charlie">Charlie (Default)</option>
-              <option value="Emma">Emma</option>
-              <option value="Brian">Brian</option>
-              <option value="Olivia">Olivia</option>
-            </select>
-          </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium">Duration</label>
-            <select 
-              className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              disabled={isGenerating}
-            >
-              <option value="5">5 seconds</option>
-              <option value="30-60">30-60 seconds</option>
-              <option value="60-90">60-90 seconds</option>
-              <option value="90-120">90-120 seconds</option>
-            </select>
-          </div>
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-medium">Voice</label>
+          <select 
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            disabled={isGenerating}
+          >
+            <option value="Charlie">Charlie (Default)</option>
+            <option value="Emma">Emma</option>
+            <option value="Brian">Brian</option>
+            <option value="Olivia">Olivia</option>
+          </select>
         </div>
         
         {/* Error message */}
@@ -325,7 +245,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground animate-pulse">
-              Vadoo AI is processing your request. This typically takes a few seconds.
+              Vadoo AI is processing your request. This typically takes a 2-3 minutes. So please be patient.
             </p>
             {jobId && (
               <p className="mt-1 text-xs text-muted-foreground">
@@ -337,7 +257,7 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
         
         {/* Generate button */}
         <div className="flex gap-2">
-          {!generatedVideoUrl ? (
+          {!isGenerating && (
             <Button
               variant="primary"
               className="w-full"
@@ -356,72 +276,35 @@ export function VideoGenerator({ onVideoGenerated }: VideoGeneratorProps) {
                 </>
               )}
             </Button>
-          ) : (
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleTryAgain}
-            >
-              Generate Another Video
-            </Button>
           )}
         </div>
       </div>
       
       {/* Generated video preview */}
-      {generatedVideoUrl && (
+      {generationState === "completed" && generatedVideo && (
         <Card>
           <CardContent className="p-4">
-            <div className="mb-4 flex items-center gap-2 text-green-600">
+            <div className="flex items-center gap-2 text-green-600 mb-4">
               <Check className="h-5 w-5" />
               <h3 className="font-medium">Video Generated Successfully!</h3>
             </div>
             
-            {matchedVideoTitle && (
-              <div className="mb-2 text-lg font-semibold text-center">
-                {matchedVideoTitle}
-              </div>
-            )}
-            
-            <div className="rounded-lg overflow-hidden bg-black aspect-video mb-4 relative">
+            <div className="rounded-lg overflow-hidden bg-black aspect-video mb-4">
               <video
-                ref={videoRef}
-                src={generatedVideoUrl}
-                poster={generatedThumbnailUrl || undefined}
+                src={generatedVideo.videoUrl}
+                poster={generatedVideo.thumbnailUrl}
                 controls
                 className="w-full h-full"
-                onLoadedData={handleVideoLoad}
-                preload="auto"
               />
-              
-              {!isVideoLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                  <Loader2 className="h-8 w-8 animate-spin text-white" />
-                </div>
-              )}
-              
-              {isVideoLoaded && !isVideoPlaying && (
-                <button 
-                  onClick={toggleVideoPlay}
-                  className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition-colors"
-                >
-                  <PlayCircle className="h-16 w-16 text-white" />
-                </button>
-              )}
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-between">
-              <Button variant="outline" size="sm" onClick={handleDownload} className="flex-1">
-                <Download className="mr-2 h-4 w-4" />
-                <span>Download Video</span>
+              <Button variant="outline" size="sm" onClick={handleTryAgain} className="flex-1">
+                Generate Another Video
               </Button>
               <Button variant="token" size="sm" className="flex-1">
                 <Coins className="mr-2 h-4 w-4" />
-                <span>Mint as NFT (0.2 INJ)</span>
-              </Button>
-              <Button variant="primary" size="sm" className="flex-1">
-                <Video className="mr-2 h-4 w-4" />
-                <span>Publish to Feed</span>
+                <span>Mint as NFT</span>
               </Button>
             </div>
           </CardContent>
