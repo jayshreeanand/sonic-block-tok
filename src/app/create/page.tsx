@@ -229,7 +229,7 @@ export default function CreatePage() {
                       <input type="checkbox" className="h-4 w-4 rounded" />
                       <span>Create as NFT</span>
                     </label>
-                    <div className="text-xs text-muted-foreground">+0.5 INJ</div>
+                    <div className="text-xs text-muted-foreground">+0.5 SOL</div>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -237,7 +237,7 @@ export default function CreatePage() {
                       <input type="checkbox" className="h-4 w-4 rounded" />
                       <span>Add music</span>
                     </label>
-                    <div className="text-xs text-muted-foreground">+0.2 INJ</div>
+                    <div className="text-xs text-muted-foreground">+0.2 SOL</div>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -245,7 +245,7 @@ export default function CreatePage() {
                       <input type="checkbox" className="h-4 w-4 rounded" />
                       <span>HD Quality</span>
                     </label>
-                    <div className="text-xs text-muted-foreground">+0.3 INJ</div>
+                    <div className="text-xs text-muted-foreground">+0.3 SOL</div>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -260,11 +260,11 @@ export default function CreatePage() {
                 <div className="mt-6 p-3 rounded-lg bg-accent/50">
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium">Total Cost:</span>
-                    <span className="font-bold">1 INJ</span>
+                    <span className="font-bold">1 SOL</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <Coins className="h-4 w-4 text-amber-500" />
-                    <span>You have 158 INJ available</span>
+                    <span>You have 158 SOL available</span>
                   </div>
                 </div>
               </CardContent>

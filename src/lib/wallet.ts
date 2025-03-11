@@ -22,7 +22,7 @@ export function useWallet() {
       
       // Mock successful connection
       const mockAddress = "inj1qr8ysyyjahm75ks9f0hk0lvlp3zxhy4tv0t0qj";
-      const mockBalance = 2.5; // INJ tokens
+      const mockBalance = 2.5; // SOL tokens
       
       setWallet({
         connected: true,
@@ -70,8 +70,8 @@ export function useWallet() {
     }
   }, []);
 
-  // For a real implementation, you would use the Injective SDK:
-  // https://github.com/InjectiveLabs/injective-ts
+  // For a real implementation, you would use the Sonic SDK:
+  // https://github.com/SonicLabs/sonic-ts
 
   return {
     wallet,

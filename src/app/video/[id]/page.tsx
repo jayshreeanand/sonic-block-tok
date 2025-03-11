@@ -141,10 +141,10 @@ export default function VideoPage({ params }: VideoPageProps) {
                       <div>
                         <h3 className="text-lg font-bold mb-1">Exclusive NFT Content</h3>
                         <p className="text-sm text-muted-foreground mb-2">
-                          Own this AI-generated video as an NFT on Injective blockchain
+                          Own this AI-generated video as an NFT on Sonic blockchain
                         </p>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xl">{video.nftPrice} INJ</span>
+                          <span className="font-bold text-xl">{video.nftPrice} SOL</span>
                           <span className="text-sm text-muted-foreground">
                             (~${(video.nftPrice || 0) * 25}.00)
                           </span>

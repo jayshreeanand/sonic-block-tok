@@ -63,7 +63,7 @@ export function VideoCard({ video, layoutType = "grid" }: VideoCardProps) {
           )}
           {isNFT && (
             <div className="absolute left-2 top-2 rounded-md bg-gradient-to-r from-purple-500 to-blue-600 px-2 py-1 text-xs font-bold text-white">
-              NFT {nftPrice ? `• ${nftPrice} INJ` : ""}
+              NFT {nftPrice ? `• ${nftPrice} SOL` : ""}
             </div>
           )}
         </div>

@@ -257,7 +257,7 @@ export const comments: Comment[] = [
     replies: [
       {
         id: "2-1",
-        content: "Just connect your wallet and start watching. You'll earn INJ tokens for each video!",
+        content: "Just connect your wallet and start watching. You'll earn SOL tokens for each video!",
         user: users[0],
         likes: 67,
         createdAt: "2024-03-10T15:05:00Z",
@@ -347,7 +347,7 @@ export const notifications: Notification[] = [
   {
     id: "3",
     type: "token",
-    content: "You earned 0.45 INJ tokens from views",
+    content: "You earned 0.45 SOL tokens from views",
     isRead: false,
     createdAt: "2024-03-11T08:25:00Z",
   },

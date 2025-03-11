@@ -2,7 +2,7 @@
   "name": "blocktok-ai",
   "version": "0.1.0",
   "private": true,
-  "description": "AI-powered short-form video generation platform on the Injective blockchain",
+  "description": "AI-powered short-form video generation platform on the Sonic blockchain",
   "author": "BlockTok Team",
   "homepage": "https://blocktok.ai",
   "repository": {
@@ -17,8 +17,8 @@
     "postinstall": "echo 'Skipping native dependencies for hackathon demo'"
   },
   "dependencies": {
-    "@injectivelabs/sdk-ts": "^1.14.41",
-    "@injectivelabs/wallet-ts": "^1.14.41",
+    "@soniclabs/sdk-ts": "^1.14.41",
+    "@soniclabs/wallet-ts": "^1.14.41",
     "@radix-ui/react-dropdown-menu": "^2.1.6",
     "@radix-ui/react-toast": "^1.2.6",
     "@rainbow-me/rainbowkit": "^2.2.4",
@@ -53,7 +53,7 @@
   },
   "keywords": [
     "blockchain",
-    "injective",
+    "sonic",
     "ai",
     "video",
     "nft",

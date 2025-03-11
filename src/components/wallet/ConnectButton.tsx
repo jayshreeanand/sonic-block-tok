@@ -76,7 +76,7 @@ export function ConnectButton({
           className={`${className} border-green-500/20 text-green-700 hover:border-green-500/30 hover:bg-green-500/10`}
         >
           <Wallet className="mr-2 h-4 w-4 text-green-600" />
-          <span className="mr-2">{formatBalance(wallet.balance)} INJ</span>
+          <span className="mr-2">{formatBalance(wallet.balance)} SOL</span>
           <span className="text-xs text-muted-foreground">{formatAddress(wallet.address)}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -92,7 +92,7 @@ export function ConnectButton({
         }}>
           Copy Address
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => window.open(`https://testnet.explorer.injective.network/account/${wallet.address}`, '_blank')}>
+        <DropdownMenuItem onClick={() => window.open(`https://testnet.explorer.sonic.network/account/${wallet.address}`, '_blank')}>
           View on Explorer
         </DropdownMenuItem>
         <DropdownMenuSeparator />

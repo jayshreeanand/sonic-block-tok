@@ -2,10 +2,10 @@
 
 <div align="center">
   <img src="public/blocktok-logo.svg" alt="BlockTok AI Logo" width="200" height="200" />
-  <h3>AI-Generated Videos on the Injective Blockchain</h3>
+  <h3>AI-Generated Videos on the Sonic Blockchain</h3>
 </div>
 
-BlockTok AI is an AI-powered short-form video generation platform on the Injective blockchain that revolutionizes user engagement by tokenizing attention. Users earn rewards for watching, sharing, and interacting with AI-generated content, while creators can monetize their content through onchain ad revenue, NFTs, and decentralized marketing campaigns.
+BlockTok AI is an AI-powered short-form video generation platform on the Sonic blockchain that revolutionizes user engagement by tokenizing attention. Users earn rewards for watching, sharing, and interacting with AI-generated content, while creators can monetize their content through onchain ad revenue, NFTs, and decentralized marketing campaigns.
 
 ## 🚀 Features
 
@@ -13,11 +13,11 @@ BlockTok AI is an AI-powered short-form video generation platform on the Injecti
   - **Text-to-Video**: Generate videos from text descriptions using Vadoo AI
   - **Style Presets**: Apply different artistic styles to generated videos
   - **Video Templates**: Use pre-made templates for quick creation
-- **Token Rewards**: Earn INJ tokens for watching, sharing, and interacting with content
-- **NFT Marketplace**: Mint videos as NFTs on the Injective blockchain
+- **Token Rewards**: Earn SOL tokens for watching, sharing, and interacting with content
+- **NFT Marketplace**: Mint videos as NFTs on the Sonic blockchain
 - **Creator Economy**: Monetize content through various revenue streams
 - **Campaign Marketplace**: Create marketing campaigns to promote content
-- **Wallet Integration**: Connect your Injective wallet to manage tokens and NFTs
+- **Wallet Integration**: Connect your Sonic wallet to manage tokens and NFTs
 
 ## 🔄 Application Flow
 
@@ -43,11 +43,11 @@ graph TD
 ## Technology Stack
 
 - **Frontend**: Next.js 15, React, TypeScript, TailwindCSS
-- **Blockchain**: Injective Protocol, Injective SDK
+- **Blockchain**: Sonic Protocol, Sonic SDK
 - **AI Integration**:
   - Vadoo AI API for text-to-video generation
   - Custom parameter configuration for high-quality results
-- **Authentication**: Wallet-based authentication with Injective
+- **Authentication**: Wallet-based authentication with Sonic
 - **Styling**: TailwindCSS with custom components
 
 ## AI Video Generation Process
@@ -57,6 +57,101 @@ graph TD
 3. **Generation**: AI generates the video based on the prompt
 4. **Delivery**: The completed video is delivered to the user
 5. **Actions**: User can download, mint as NFT, or publish to the feed
+
+## Blockchain Features
+
+The BlockTok platform includes the following blockchain features:
+
+1. **Content Registration**: Store content metadata on the Solana blockchain
+2. **NFT Minting**: Convert content into NFTs with customizable metadata
+3. **Analytics Tracking**: Track views, likes, shares, and comments on-chain
+4. **Royalty Distribution**: Set up royalty percentages for multiple contributors
+5. **Wallet Integration**: Connect with popular Solana wallets like Phantom and Solflare
+
+## API Routes
+
+- `/api/generate` - Main endpoint to generate a video from text input
+- `/api/test-video` - Test endpoint for video generation
+
+## Environment Variables
+
+Create a `.env.local` file with the following variables:
+
+```env
+# AI Services
+OPENAI_API_KEY=
+ELEVENLABS_API_KEY=
+RUNWAY_API_KEY=
+
+# Blockchain
+NEXT_PUBLIC_SOLANA_RPC_URL=
+NEXT_PUBLIC_BLOCKTOK_PROGRAM_ID=3jf8o4DHcTUg71tpP7PdRFGyBrfFKW2H6LBstCfs5vqz
+```
+
+## Deployment
+
+This project can be deployed on platforms like Vercel, Netlify, or Railway. For Railway deployment, the following environment variables can help bypass build errors:
+
+```env
+CI=false
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
+```
+
+## Solana Smart Contracts
+
+The project includes two implementations of Solana smart contracts for NFT minting, content tracking, and monetization:
+
+### 1. Vanilla Solana Implementation (src/contracts/blocktok/)
+
+Pure Rust implementation using Solana's native programming model.
+
+**Features:**
+
+- Content management with metadata and analytics tracking
+- NFT minting for digital content
+- Royalty distribution mechanism
+- On-chain content verification
+
+**Building and Deploying:**
+
+```bash
+# Using Solana CLI
+cd src/contracts/blocktok
+cargo build-bpf
+solana program deploy --url devnet target/deploy/blocktok.so
+```
+
+### 2. Anchor Framework Implementation (src/contracts/anchor-blocktok/)
+
+Same functionality implemented using the Anchor framework for improved developer experience.
+
+**Features:**
+
+- Simplified account validation
+- Structured data handling with Anchor's macros
+- Automatic PDA derivation and validation
+- Built-in error types with custom messages
+
+**Building and Deploying:**
+
+```bash
+# Using Anchor
+cd src/contracts/anchor-blocktok
+anchor build
+anchor deploy --provider.cluster devnet
+```
+
+### Deployed Program
+
+The Anchor-based BlockTok program is currently deployed on Solana devnet at the following address:
+
+```
+3jf8o4DHcTUg71tpP7PdRFGyBrfFKW2H6LBstCfs5vqz
+```
+
+## License
+
+MIT
 
 ## 🔒 Environment Setup
 
@@ -114,21 +209,21 @@ src/
 
    - User browses video feed
    - Watches videos
-   - Earns INJ tokens for engagement
+   - Earns SOL tokens for engagement
    - Tokens are sent to connected wallet
 
 3. **NFT Marketplace**:
    - Creator mints video as NFT
    - NFT is listed in marketplace
-   - Buyers purchase with Injective tokens
+   - Buyers purchase with Sonic tokens
    - Ownership transfers on blockchain
 
 ## 💰 Tokenomics
 
-- **INJ Token**: Native utility token on Injective blockchain
+- **SOL Token**: Native utility token on Sonic blockchain
 - **Earning Mechanisms**:
-  - Watching videos (0.01 INJ per minute)
-  - Creating content (0.2 INJ per published video)
+  - Watching videos (0.01 SOL per minute)
+  - Creating content (0.2 SOL per published video)
   - Community engagement (voting, commenting)
 - **Spending Use Cases**:
   - Premium video generation features
@@ -185,7 +280,7 @@ The app is optimized for deployment on Vercel, but can be deployed to any platfo
 - **Enhanced AI Models**: Integration with more advanced video generation models
 - **Real-time Collaboration**: Allow multiple creators to collaborate on videos
 - **Advanced Analytics**: Detailed insights for creators about audience engagement
-- **Multi-chain Support**: Expand beyond Injective to other EVM-compatible chains
+- **Multi-chain Support**: Expand beyond Sonic to other EVM-compatible chains
 - **Mobile Apps**: Native mobile applications for iOS and Android
 
 ## License
@@ -198,6 +293,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Acknowledgements
 
-- [Injective Protocol](https://injective.com/) for blockchain infrastructure
+- [Sonic Protocol](https://sonic.com/) for blockchain infrastructure
 - [Vadoo AI](https://vadoo.ai/) for video generation capabilities
 - [Mixkit](https://mixkit.co/) for sample videos used in demonstration

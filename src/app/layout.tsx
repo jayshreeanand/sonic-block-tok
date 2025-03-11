@@ -6,8 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "BlockTok AI | AI-Generated Videos on Injective Blockchain",
-  description: "AI-powered short-form video platform on Injective blockchain where users earn rewards for watching, sharing, and interacting with AI-generated content.",
+  title: "BlockTok AI | AI-Generated Videos on Sonic Blockchain",
+  description: "AI-powered short-form video platform on Sonic blockchain where users earn rewards for watching, sharing, and interacting with AI-generated content.",
 };
 
 export default function RootLayout({

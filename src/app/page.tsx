@@ -84,7 +84,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Zap className="h-4 w-4 text-amber-500" />
-                  <span>Powered by Injective blockchain</span>
+                  <span>Powered by Sonic blockchain</span>
                 </div>
               </div>
               <div className="rounded-lg overflow-hidden shadow-xl">
@@ -226,7 +226,7 @@ export default function HomePage() {
             <div>
               <h2 className="text-3xl font-bold mb-4">Start Earning Today</h2>
               <p className="mb-6">
-                Connect your wallet and start earning INJ tokens for watching videos, creating content, and participating in the BlockTok ecosystem.
+                Connect your wallet and start earning SOL tokens for watching videos, creating content, and participating in the BlockTok ecosystem.
               </p>
               <ConnectButton variant="default" size="lg" className="bg-white text-purple-600 hover:bg-gray-100" />
             </div>
@@ -238,13 +238,13 @@ export default function HomePage() {
                     <div className="rounded-full bg-white/20 p-1 mt-1">
                       <span className="text-sm">1</span>
                     </div>
-                    <span>Connect your Injective wallet</span>
+                    <span>Connect your Sonic wallet</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="rounded-full bg-white/20 p-1 mt-1">
                       <span className="text-sm">2</span>
                     </div>
-                    <span>Watch AI-generated videos to earn INJ tokens</span>
+                    <span>Watch AI-generated videos to earn SOL tokens</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <div className="rounded-full bg-white/20 p-1 mt-1">
