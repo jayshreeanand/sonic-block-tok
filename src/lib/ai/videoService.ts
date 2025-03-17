@@ -18,12 +18,12 @@ interface VideoResponse {
 
 export class VideoService {
   private apiKey: string;
-  private baseUrl: string = 'https://api.pikalabs.io/v1';
+  private baseUrl: string = 'https://api.runwayml.com/v1';
 
   constructor() {
-    this.apiKey = process.env.PIKA_LABS_API_KEY || '';
+    this.apiKey = process.env.RUNWAY_API_KEY || '';
     if (!this.apiKey) {
-      throw new Error('PIKA_LABS_API_KEY is not set');
+      throw new Error('RUNWAY_API_KEY is not set');
     }
   }
 
@@ -41,12 +41,15 @@ export class VideoService {
         ...options,
       };
 
+      // First, generate a video from the script using Runway's Gen-2 model
       const response = await axios.post<VideoResponse>(
-        `${this.baseUrl}/videos/generate`,
+        `${this.baseUrl}/inference/gen-2`,
         {
-          script,
-          voice_url: voiceUrl,
-          ...defaultOptions,
+          prompt: script,
+          duration: defaultOptions.duration,
+          resolution: defaultOptions.resolution,
+          fps: defaultOptions.fps,
+          style: defaultOptions.style,
         },
         {
           headers: {
@@ -56,7 +59,18 @@ export class VideoService {
         }
       );
 
-      return response.data.video_url;
+      // Get the generated video URL
+      const videoUrl = response.data.video_url;
+
+      // If we have a voice URL, we need to combine it with the video
+      if (voiceUrl) {
+        // TODO: Implement audio-video combination
+        // For now, we'll just return the video URL
+        // In a production environment, you would want to use a service like FFmpeg
+        // to combine the audio and video
+      }
+
+      return videoUrl;
     } catch (error) {
       console.error('Error generating video:', error);
       throw new Error('Failed to generate video');
@@ -65,7 +79,7 @@ export class VideoService {
 
   async getVideoStatus(videoId: string): Promise<'processing' | 'completed' | 'failed'> {
     try {
-      const response = await axios.get(`${this.baseUrl}/videos/${videoId}`, {
+      const response = await axios.get(`${this.baseUrl}/inference/${videoId}`, {
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
         },

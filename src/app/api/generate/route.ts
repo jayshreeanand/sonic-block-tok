@@ -1,28 +1,20 @@
 import { NextResponse } from 'next/server';
 import { ContentGenerator } from '@/lib/ai/contentGenerator';
-import { ContentFormData } from '@/components/features/content/CreateContentForm';
 
 export async function POST(request: Request) {
   try {
-    const formData: ContentFormData = await request.json();
-    
-    // Validate required fields
-    if (!formData.title || !formData.topic || !formData.description) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
+    const body = await request.json();
+    const { topic, tone, duration, isNFT, walletAddress } = body;
 
-    // Initialize content generator
-    const contentGenerator = ContentGenerator.getInstance();
+    const contentGenerator = new ContentGenerator();
+    const result = await contentGenerator.generateFullContent(
+      { topic, tone, duration, isNFT },
+      walletAddress
+    );
 
-    // Generate content
-    const content = await contentGenerator.generateFullContent(formData);
-
-    return NextResponse.json(content);
+    return NextResponse.json(result);
   } catch (error) {
-    console.error('Error in content generation API:', error);
+    console.error('Error in generate API route:', error);
     return NextResponse.json(
       { error: 'Failed to generate content' },
       { status: 500 }

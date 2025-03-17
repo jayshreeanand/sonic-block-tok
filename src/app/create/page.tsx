@@ -5,14 +5,13 @@ import { useRouter } from 'next/navigation';
 import { ContentForm } from '@/components/features/content/ContentForm';
 import { WalletConnect } from '@/components/features/wallet/WalletConnect';
 import { NFTMintStatus } from '@/components/features/nft/NFTMintStatus';
-import { ContentGenerator } from '@/lib/ai/contentGenerator';
 
 export default function CreatePage() {
   const router = useRouter();
   const [isGenerating, setIsGenerating] = useState(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [nftTransactionHash, setNftTransactionHash] = useState<string | null>(null);
-  const contentGenerator = new ContentGenerator();
+  const [error, setError] = useState<string | null>(null);
 
   const handleWalletConnect = (address: string) => {
     setWalletAddress(address);
@@ -26,12 +25,30 @@ export default function CreatePage() {
     topic: string;
     tone: string;
     duration: number;
-    isNFT: boolean;
+    isNFT?: boolean;
   }) => {
     try {
       setIsGenerating(true);
+      setError(null);
       setNftTransactionHash(null);
-      const result = await contentGenerator.generateFullContent(formData, walletAddress);
+
+      const response = await fetch('/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          walletAddress: formData.isNFT ? walletAddress : null,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to generate content');
+      }
+
+      const result = await response.json();
       
       if (formData.isNFT && result.nftMintResponse) {
         setNftTransactionHash(result.nftMintResponse.transactionHash);
@@ -42,7 +59,7 @@ export default function CreatePage() {
       router.push('/dashboard');
     } catch (error) {
       console.error('Error generating content:', error);
-      // Show error message to user
+      setError(error instanceof Error ? error.message : 'An error occurred while generating content');
     } finally {
       setIsGenerating(false);
     }
@@ -64,6 +81,12 @@ export default function CreatePage() {
         isGenerating={isGenerating}
         walletAddress={walletAddress}
       />
+
+      {error && (
+        <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-red-600">{error}</p>
+        </div>
+      )}
 
       {nftTransactionHash && (
         <NFTMintStatus

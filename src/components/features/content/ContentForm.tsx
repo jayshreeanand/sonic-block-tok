@@ -5,7 +5,7 @@ interface ContentFormProps {
     topic: string;
     tone: string;
     duration: number;
-    isNFT: boolean;
+    isNFT?: boolean;
   }) => Promise<void>;
   isGenerating: boolean;
   walletAddress: string | null;

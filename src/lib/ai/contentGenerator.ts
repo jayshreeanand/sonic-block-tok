@@ -32,8 +32,13 @@ export class ContentGenerator {
   private sonicService: SonicService;
 
   constructor() {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY environment variable is not set. Please check your .env file.');
+    }
+
     this.openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
+      apiKey,
     });
     this.voiceService = new VoiceService();
     this.videoService = new VideoService();
@@ -66,7 +71,7 @@ export class ContentGenerator {
       topic: string;
       tone: string;
       duration: number;
-      isNFT: boolean;
+      isNFT?: boolean;
     },
     walletAddress?: string | null
   ): Promise<GeneratedContent> {
@@ -86,7 +91,7 @@ export class ContentGenerator {
         duration: formData.duration,
       });
 
-      // Generate NFT metadata if requested
+      // Only proceed with NFT generation if explicitly requested and wallet is connected
       let nftMetadata: NFTMetadata | undefined;
       let nftMintResponse: GeneratedContent['nftMintResponse'] | undefined;
 
