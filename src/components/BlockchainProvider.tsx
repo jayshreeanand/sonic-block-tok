@@ -1,107 +1,156 @@
 'use client';
 
-import React, { createContext, useContext, useMemo, useEffect, useState } from 'react';
-import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { BlocktokClient } from '@/lib/blockchain/BlocktokClient';
-import { toast } from 'sonner';
+import { 
+  createContext, 
+  useContext, 
+  useState, 
+  useEffect, 
+  ReactNode 
+} from 'react';
+import { 
+  Connection, 
+  PublicKey, 
+  Transaction 
+} from '@solana/web3.js';
+import { loadPhantomScript } from '@/lib/scripts/load-phantom';
 
-// Create a context for the BlocktokClient
+// Define the shape of our blockchain context
 interface BlockchainContextType {
-  client: BlocktokClient | null;
-  connection: Connection | null;
   isConnected: boolean;
   publicKey: PublicKey | null;
-  connectWallet: () => void;
+  connectWallet: () => Promise<void>;
+  disconnectWallet: () => void;
+  signAndSendTransaction: (transaction: Transaction) => Promise<string>;
 }
 
-// Default context values
-const defaultContext: BlockchainContextType = {
-  client: null,
-  connection: null,
+// Create the context with default values
+const BlockchainContext = createContext<BlockchainContextType>({
   isConnected: false,
   publicKey: null,
-  connectWallet: () => {},
-};
+  connectWallet: async () => {},
+  disconnectWallet: () => {},
+  signAndSendTransaction: async () => '',
+});
 
-const BlockchainContext = createContext<BlockchainContextType>(defaultContext);
+// Custom hook to use the blockchain context
+export const useBlockchain = () => useContext(BlockchainContext);
 
-// Create a hook for accessing the blockchain context
-export function useBlockchain() {
-  return useContext(BlockchainContext);
-}
-
-interface BlockchainProviderProps {
-  children: React.ReactNode;
-}
-
-export function BlockchainProvider({ children }: BlockchainProviderProps) {
-  const wallet = useWallet();
-  const { publicKey, connect, connected } = wallet;
-  const [client, setClient] = useState<BlocktokClient | null>(null);
+// Provider component
+export function BlockchainProvider({ children }: { children: ReactNode }) {
+  const [isConnected, setIsConnected] = useState(false);
+  const [publicKey, setPublicKey] = useState<PublicKey | null>(null);
   
-  // Create a connection to Solana devnet
-  const connection = useMemo(() => {
-    return new Connection(
-      process.env.NEXT_PUBLIC_SOLANA_RPC_URL || clusterApiUrl('devnet'),
-      'confirmed'
-    );
-  }, []);
-  
-  // Initialize the BlocktokClient when wallet is connected
+  // Load Phantom script and check for wallet on component mount
   useEffect(() => {
-    if (connected && publicKey && wallet.wallet) {
+    const initPhantom = async () => {
+      if (typeof window === 'undefined') return;
+
       try {
-        // Create an anchor wallet adapter from the wallet
-        const anchorWallet = {
-          publicKey: publicKey,
-          signTransaction: wallet.signTransaction,
-          signAllTransactions: wallet.signAllTransactions,
+        // Load the Phantom script if it's not already loaded
+        await loadPhantomScript();
+        
+        // Check for existing connection
+        const checkForPhantom = async () => {
+          // @ts-expect-error - Phantom is injected into the window object
+          const phantom = window.phantom?.solana;
+          
+          if (phantom) {
+            try {
+              // Check if the wallet was previously connected
+              const response = await phantom.connect({ onlyIfTrusted: true });
+              setPublicKey(new PublicKey(response.publicKey.toString()));
+              setIsConnected(true);
+            } catch (error) {
+              // User hasn't connected to the app yet or connection failed
+              console.log("Wallet not connected or error:", error);
+            }
+          }
         };
         
-        // Initialize the client
-        const newClient = new BlocktokClient(
-          connection,
-          anchorWallet,
-          process.env.NEXT_PUBLIC_BLOCKTOK_PROGRAM_ID || '3jf8o4DHcTUg71tpP7PdRFGyBrfFKW2H6LBstCfs5vqz'
-        );
-        
-        setClient(newClient);
-        toast.success('Connected to BlockTok blockchain client');
+        await checkForPhantom();
       } catch (error) {
-        console.error('Error initializing BlocktokClient:', error);
-        toast.error('Failed to connect to blockchain');
+        console.error("Error initializing Phantom:", error);
       }
-    } else {
-      setClient(null);
-    }
-  }, [connection, publicKey, connected, wallet]);
+    };
+    
+    initPhantom();
+  }, []);
   
-  // Function to handle connecting to wallet
+  // Connect to Phantom wallet
   const connectWallet = async () => {
-    if (wallet.wallet) {
-      try {
-        await connect();
-      } catch (error) {
-        console.error('Error connecting wallet:', error);
-        toast.error('Failed to connect wallet');
+    try {
+      // Ensure script is loaded
+      await loadPhantomScript();
+
+      // @ts-expect-error - Phantom is injected into the window object
+      const phantom = window.phantom?.solana;
+      
+      if (phantom) {
+        const response = await phantom.connect();
+        setPublicKey(new PublicKey(response.publicKey.toString()));
+        setIsConnected(true);
+        return;
       }
-    } else {
-      toast.error('Please install a Solana wallet extension');
+      
+      // If Phantom wallet isn't installed, direct user to install it
+      window.open('https://phantom.app/', '_blank');
+    } catch (error) {
+      console.error("Error connecting to wallet:", error);
     }
   };
   
-  // Context value
-  const value = {
-    client,
-    connection,
-    isConnected: connected,
-    publicKey,
-    connectWallet,
+  // Disconnect from wallet
+  const disconnectWallet = () => {
+    try {
+      // @ts-expect-error - Phantom is injected into the window object
+      window.phantom?.solana?.disconnect();
+      setPublicKey(null);
+      setIsConnected(false);
+    } catch (error) {
+      console.error("Error disconnecting from wallet:", error);
+    }
   };
   
+  // Sign and send a transaction
+  const signAndSendTransaction = async (transaction: Transaction): Promise<string> => {
+    try {
+      // Ensure script is loaded
+      await loadPhantomScript();
+
+      // @ts-expect-error - Phantom is injected into the window object
+      const phantom = window.phantom?.solana;
+      
+      if (!phantom || !isConnected) {
+        throw new Error("Wallet not connected");
+      }
+      
+      // Connect to Solana devnet for testing
+      const connection = new Connection("https://api.devnet.solana.com", "confirmed");
+      
+      // Have Phantom sign the transaction
+      const { signature } = await phantom.signAndSendTransaction(transaction);
+      
+      // Wait for confirmation
+      await connection.confirmTransaction(signature);
+      
+      return signature;
+    } catch (error) {
+      console.error("Error signing transaction:", error);
+      throw error;
+    }
+  };
+  
+  // Provide the blockchain context to child components
   return (
-    <BlockchainContext.Provider value={value}>
+    <BlockchainContext.Provider
+      value={{
+        isConnected,
+        publicKey,
+        connectWallet,
+        disconnectWallet,
+        signAndSendTransaction,
+      }}
+    >
       {children}
     </BlockchainContext.Provider>
   );

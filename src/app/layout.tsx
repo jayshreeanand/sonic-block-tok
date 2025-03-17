@@ -5,13 +5,12 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 import { Toaster } from 'sonner';
 import { WalletProviders } from '@/components/WalletProviders';
 import { BlockchainProvider } from '@/components/BlockchainProvider';
-import { NavBar } from '@/components/NavBar';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'BlockTok - Decentralized Content Platform',
-  description: 'A decentralized content platform built on Solana blockchain',
+  title: 'BlockTok - AI Video Creator with Blockchain Integration',
+  description: 'Create AI videos and manage them on the blockchain for proof of ownership and monetization',
 };
 
 export default function RootLayout({
@@ -30,15 +29,13 @@ export default function RootLayout({
         >
           <WalletProviders>
             <BlockchainProvider>
-              <div className="flex flex-col min-h-screen">
-                <NavBar />
-                <main className="flex-1">
-                  {children}
-                </main>
-                <footer className="py-6 border-t">
-                  <div className="container mx-auto px-4 text-center text-sm text-gray-500">
-                    <p>© 2023 BlockTok. All rights reserved.</p>
-                    <p className="mt-1">Powered by Solana blockchain.</p>
+              <div className="relative flex min-h-screen flex-col">
+                <div className="flex-1">{children}</div>
+                <footer className="py-6 md:px-8 md:py-0">
+                  <div className="container flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+                    <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+                      Built with ❤️ for Solana
+                    </p>
                   </div>
                 </footer>
               </div>
