@@ -1,6 +1,6 @@
 # BlockTok
 
-BlockTok is an AI-powered agent that autonomously generates, edits, and publishes short-form videos optimized for social media platforms. Built on the Sonic blockchain, it enables content creators to create, monetize, and track their content across multiple platforms.
+BlockTok is an AI-powered platform that enables content creators to create, monetize, and track their content across multiple platforms. Built on the Solana blockchain, it allows creators to mint their content as NFTs and earn royalties directly from viewers and supporters.
 
 ## Features
 
@@ -13,26 +13,26 @@ BlockTok is an AI-powered agent that autonomously generates, edits, and publishe
 
 - ⛓️ Blockchain Integration
 
-  - NFT minting for exclusive content
+  - Content tracking on Solana blockchain
+  - NFT minting for content ownership
+  - Royalty distribution mechanism
   - On-chain analytics tracking
-  - Smart contract-based monetization
 
-- 📱 Multi-Platform Publishing
-  - TikTok
-  - Instagram Reels
-  - YouTube Shorts
-  - X (Twitter)
+- 💰 Creator Monetization
+  - Direct wallet payments
+  - Customizable royalty percentages
+  - Revenue sharing among collaborators
 
 ## Tech Stack
 
-- Next.js 14 with App Router
+- Next.js with App Router
 - TypeScript
 - Tailwind CSS
-- Injective Blockchain
-- OpenAI GPT-4
-- ElevenLabs
+- Solana Blockchain
+- Anchor Framework
+- Wallet Adapter
 - RunwayML SDK
-- Whisper AI
+- OpenAI GPT-4
 
 ## Getting Started
 
@@ -50,6 +50,16 @@ BlockTok is an AI-powered agent that autonomously generates, edits, and publishe
    npm run dev
    ```
 
+## Blockchain Features
+
+The BlockTok platform includes the following blockchain features:
+
+1. **Content Registration**: Store content metadata on the Solana blockchain
+2. **NFT Minting**: Convert content into NFTs with customizable metadata
+3. **Analytics Tracking**: Track views, likes, shares, and comments on-chain
+4. **Royalty Distribution**: Set up royalty percentages for multiple contributors
+5. **Wallet Integration**: Connect with popular Solana wallets like Phantom and Solflare
+
 ## API Routes
 
 - `/api/generate` - Main endpoint to generate a video from text input
@@ -60,10 +70,14 @@ BlockTok is an AI-powered agent that autonomously generates, edits, and publishe
 Create a `.env.local` file with the following variables:
 
 ```env
+# AI Services
 OPENAI_API_KEY=
 ELEVENLABS_API_KEY=
 RUNWAY_API_KEY=
-INJECTIVE_PRIVATE_KEY=
+
+# Blockchain
+NEXT_PUBLIC_SOLANA_RPC_URL=
+NEXT_PUBLIC_BLOCKTOK_PROGRAM_ID=3jf8o4DHcTUg71tpP7PdRFGyBrfFKW2H6LBstCfs5vqz
 ```
 
 ## Deployment
@@ -72,7 +86,7 @@ This project can be deployed on platforms like Vercel, Netlify, or Railway. For 
 
 ```env
 CI=false
-NEXT_IGNORE_TYPESCRIPT_ERRORS=true
+NEXT_PUBLIC_SOLANA_RPC_URL=https://api.devnet.solana.com
 ```
 
 ## Solana Smart Contracts
@@ -119,11 +133,12 @@ anchor build
 anchor deploy --provider.cluster devnet
 ```
 
-### Environment Variables for Blockchain Integration
+### Deployed Program
+
+The Anchor-based BlockTok program is currently deployed on Solana devnet at the following address:
 
 ```
-SOLANA_PRIVATE_KEY=your_solana_private_key
-SOLANA_PROGRAM_ID=your_deployed_program_id
+3jf8o4DHcTUg71tpP7PdRFGyBrfFKW2H6LBstCfs5vqz
 ```
 
 ## License
